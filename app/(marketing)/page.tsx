@@ -33,30 +33,30 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* サービス概要セクション */}
+      {/* 主力サービス紹介セクション */}
       <div className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:text-center">
-            <h2 className="text-base text-[#00a86b] font-semibold tracking-wide uppercase">
-              サービスラインナップ
+            <h2 className="text-base text-[#ff7e00] font-semibold tracking-wide uppercase">
+              主力サービス
             </h2>
             <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              最先端AIで都市課題を解決
+              豊富な実績と専門性を活かした<br />核となるソリューション
             </p>
             <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-              それぞれの地域の特性やニーズに合わせて、最適なソリューションを提供します。
+              高度なAI技術と実績に基づいた、即導入可能な主力ソリューションをご提供します。
             </p>
           </div>
 
           <div className="mt-16">
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {/* 交通ソリューション */}
-              <div className="bg-white overflow-hidden shadow rounded-lg">
-                <div className="p-6">
+            <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
+              {/* 交通ソリューション（主力） */}
+              <div className="bg-white overflow-hidden shadow-lg rounded-lg border-t-4 border-[#0056b3] hover:shadow-xl transition-shadow duration-300">
+                <div className="p-8">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 bg-[#0056b3] rounded-md p-3">
                       <svg
-                        className="h-6 w-6 text-white"
+                        className="h-8 w-8 text-white"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -71,28 +71,118 @@ export default function HomePage() {
                       </svg>
                     </div>
                     <div className="ml-4">
-                      <h3 className="text-lg font-medium text-gray-900">交通ソリューション</h3>
+                      <h3 className="text-xl font-bold text-gray-900">交通ソリューション</h3>
                     </div>
                   </div>
-                  <div className="mt-4">
-                    <p className="text-base text-gray-500">
-                      AI交通量計測システムと交通予測分析により、渋滞を軽減し、最適な交通管理を実現します。
-                    </p>
-                  </div>
                   <div className="mt-6">
+                    <p className="text-base text-gray-600">
+                      AI画像認識技術を活用した交通量計測システムと交通予測分析により、渋滞を軽減し、最適な交通管理を実現します。既存カメラを活用した低コスト導入が可能です。
+                    </p>
+                    <ul className="mt-4 space-y-2">
+                      <li className="flex items-start">
+                        <CheckCircleIcon className="h-5 w-5 text-[#0056b3] mt-0.5 mr-2 flex-shrink-0" />
+                        <span className="text-sm text-gray-600">AI交通量計測システム</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircleIcon className="h-5 w-5 text-[#0056b3] mt-0.5 mr-2 flex-shrink-0" />
+                        <span className="text-sm text-gray-600">機械学習による交通量予測</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircleIcon className="h-5 w-5 text-[#0056b3] mt-0.5 mr-2 flex-shrink-0" />
+                        <span className="text-sm text-gray-600">リアルタイムダッシュボード</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="mt-8">
                     <Link
                       href="/services#traffic"
-                      className="inline-flex items-center text-[#0056b3] hover:text-[#004494]"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#0056b3] hover:bg-[#004494] focus:outline-none"
                     >
                       詳細を見る
-                      <ArrowRightIcon className="ml-1 h-4 w-4" />
+                      <ArrowRightIcon className="ml-2 h-4 w-4" />
                     </Link>
                   </div>
                 </div>
               </div>
 
-              {/* 環境モニタリング */}
-              <div className="bg-white overflow-hidden shadow rounded-lg">
+              {/* 地域経済活性化（主力） */}
+              <div className="bg-white overflow-hidden shadow-lg rounded-lg border-t-4 border-[#0056b3] hover:shadow-xl transition-shadow duration-300">
+                <div className="p-8">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-[#0056b3] rounded-md p-3">
+                      <svg
+                        className="h-8 w-8 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-xl font-bold text-gray-900">地域経済活性化</h3>
+                    </div>
+                  </div>
+                  <div className="mt-6">
+                    <p className="text-base text-gray-600">
+                      来街者分析・商圏分析と観光客行動分析により、地域経済の活性化と効果的な観光戦略を支援します。Wi-Fiセンサーによる人流データ収集と高度な分析を提供します。
+                    </p>
+                    <ul className="mt-4 space-y-2">
+                      <li className="flex items-start">
+                        <CheckCircleIcon className="h-5 w-5 text-[#0056b3] mt-0.5 mr-2 flex-shrink-0" />
+                        <span className="text-sm text-gray-600">来街者行動パターン分析</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircleIcon className="h-5 w-5 text-[#0056b3] mt-0.5 mr-2 flex-shrink-0" />
+                        <span className="text-sm text-gray-600">小売店・飲食店向け需要予測</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircleIcon className="h-5 w-5 text-[#0056b3] mt-0.5 mr-2 flex-shrink-0" />
+                        <span className="text-sm text-gray-600">観光資源の効果的活用戦略</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="mt-8">
+                    <Link
+                      href="/services#economic"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#0056b3] hover:bg-[#004494] focus:outline-none"
+                    >
+                      詳細を見る
+                      <ArrowRightIcon className="ml-2 h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 補助サービス概要セクション */}
+      <div className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="lg:text-center">
+            <h2 className="text-base text-[#00a86b] font-semibold tracking-wide uppercase">
+              補助サービス
+            </h2>
+            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+              多様なニーズに応える<br />追加ソリューション
+            </p>
+            <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+              AI技術と提携パートナーとの連携により、幅広い都市課題に対応します。
+            </p>
+          </div>
+
+          <div className="mt-16">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+              {/* 環境モニタリング（補助） */}
+              <div className="bg-white overflow-hidden shadow rounded-lg border-t-2 border-[#00a86b]">
                 <div className="p-6">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 bg-[#00a86b] rounded-md p-3">
@@ -123,7 +213,7 @@ export default function HomePage() {
                   <div className="mt-6">
                     <Link
                       href="/services#environment"
-                      className="inline-flex items-center text-[#0056b3] hover:text-[#004494]"
+                      className="inline-flex items-center text-[#00a86b] hover:text-[#008f5b]"
                     >
                       詳細を見る
                       <ArrowRightIcon className="ml-1 h-4 w-4" />
@@ -132,11 +222,11 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* エネルギー最適化 */}
-              <div className="bg-white overflow-hidden shadow rounded-lg">
+              {/* エネルギー最適化（補助） */}
+              <div className="bg-white overflow-hidden shadow rounded-lg border-t-2 border-[#00a86b]">
                 <div className="p-6">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-[#ff7e00] rounded-md p-3">
+                    <div className="flex-shrink-0 bg-[#00a86b] rounded-md p-3">
                       <svg
                         className="h-6 w-6 text-white"
                         xmlns="http://www.w3.org/2000/svg"
@@ -164,7 +254,7 @@ export default function HomePage() {
                   <div className="mt-6">
                     <Link
                       href="/services#energy"
-                      className="inline-flex items-center text-[#0056b3] hover:text-[#004494]"
+                      className="inline-flex items-center text-[#00a86b] hover:text-[#008f5b]"
                     >
                       詳細を見る
                       <ArrowRightIcon className="ml-1 h-4 w-4" />
@@ -173,11 +263,11 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* 防災・セキュリティ */}
-              <div className="bg-white overflow-hidden shadow rounded-lg">
+              {/* 防災・セキュリティ（補助） */}
+              <div className="bg-white overflow-hidden shadow rounded-lg border-t-2 border-[#00a86b]">
                 <div className="p-6">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-[#0056b3] rounded-md p-3">
+                    <div className="flex-shrink-0 bg-[#00a86b] rounded-md p-3">
                       <svg
                         className="h-6 w-6 text-white"
                         xmlns="http://www.w3.org/2000/svg"
@@ -205,7 +295,7 @@ export default function HomePage() {
                   <div className="mt-6">
                     <Link
                       href="/services#security"
-                      className="inline-flex items-center text-[#0056b3] hover:text-[#004494]"
+                      className="inline-flex items-center text-[#00a86b] hover:text-[#008f5b]"
                     >
                       詳細を見る
                       <ArrowRightIcon className="ml-1 h-4 w-4" />
@@ -214,8 +304,8 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* スマートインフラ管理 */}
-              <div className="bg-white overflow-hidden shadow rounded-lg">
+              {/* スマートインフラ管理（補助） */}
+              <div className="bg-white overflow-hidden shadow rounded-lg border-t-2 border-[#00a86b]">
                 <div className="p-6">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 bg-[#00a86b] rounded-md p-3">
@@ -246,48 +336,7 @@ export default function HomePage() {
                   <div className="mt-6">
                     <Link
                       href="/services#infrastructure"
-                      className="inline-flex items-center text-[#0056b3] hover:text-[#004494]"
-                    >
-                      詳細を見る
-                      <ArrowRightIcon className="ml-1 h-4 w-4" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* 地域経済活性化 */}
-              <div className="bg-white overflow-hidden shadow rounded-lg">
-                <div className="p-6">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-[#ff7e00] rounded-md p-3">
-                      <svg
-                        className="h-6 w-6 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                    <div className="ml-4">
-                      <h3 className="text-lg font-medium text-gray-900">地域経済活性化</h3>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <p className="text-base text-gray-500">
-                      来街者分析・商圏分析と観光客行動分析で、地域経済の活性化と効果的な観光戦略を支援します。
-                    </p>
-                  </div>
-                  <div className="mt-6">
-                    <Link
-                      href="/services#economic"
-                      className="inline-flex items-center text-[#0056b3] hover:text-[#004494]"
+                      className="inline-flex items-center text-[#00a86b] hover:text-[#008f5b]"
                     >
                       詳細を見る
                       <ArrowRightIcon className="ml-1 h-4 w-4" />
@@ -301,7 +350,7 @@ export default function HomePage() {
       </div>
 
       {/* 特徴セクション */}
-      <div className="py-16 bg-white">
+      <div className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:text-center">
             <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">

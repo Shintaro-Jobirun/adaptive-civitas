@@ -1,6 +1,5 @@
 // app/(marketing)/case-studies/page.tsx
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 // 型定義
