@@ -1,4 +1,6 @@
 // app/(marketing)/services/page.tsx
+"use client"
+
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 
@@ -16,7 +18,7 @@ interface ServiceSection {
 const services: ServiceSection[] = [
   {
     id: 'traffic',
-    title: '交通ソリューション',
+    title: '交通',
     description:
       'AI技術を活用した交通管理ソリューションで、渋滞の軽減と交通フローの最適化を実現します。リアルタイムデータと機械学習モデルにより、正確な交通予測と最適な経路提案が可能です。',
     features: [
@@ -32,7 +34,7 @@ const services: ServiceSection[] = [
   },
   {
     id: 'environment',
-    title: '環境モニタリングソリューション',
+    title: '環境モニタリング',
     description:
       '低コストセンサーネットワークと高度なAI分析で、大気質や騒音レベルをリアルタイムに監視します。環境データの可視化と予測分析により、都市環境の改善と住民の健康保護を支援します。',
     features: [
@@ -48,7 +50,7 @@ const services: ServiceSection[] = [
   },
   {
     id: 'energy',
-    title: 'エネルギー最適化ソリューション',
+    title: 'エネルギー最適化',
     description:
       '機械学習を用いたエネルギー消費パターン分析で、無駄を特定し最適化します。中小企業向けの省エネ対策やマイクログリッド管理により、コスト削減と環境負荷軽減を同時に実現します。',
     features: [
@@ -64,7 +66,7 @@ const services: ServiceSection[] = [
   },
   {
     id: 'security',
-    title: '防災・セキュリティソリューション',
+    title: '防災・セキュリティ',
     description:
       'AIによる映像解析と異常検知で、セキュリティリスクや災害の早期発見を実現。リアルタイムアラートと避難支援システムにより、安全・安心な都市環境の構築に貢献します。',
     features: [
@@ -96,7 +98,7 @@ const services: ServiceSection[] = [
   },
   {
     id: 'economic',
-    title: '地域経済活性化ソリューション',
+    title: '地域経済活性化',
     description:
       '匿名化された人流データとAI分析で、来街者や観光客の行動パターンを把握。データ駆動型の地域経済活性化戦略と効果的な観光プロモーションを支援します。',
     features: [

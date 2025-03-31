@@ -65,7 +65,10 @@ export default function ContactPage() {
               お問い合わせ
             </h1>
             <p className="mt-4 text-xl text-white opacity-90 max-w-3xl mx-auto">
-              スマートシティソリューションについてのご質問や導入のご相談など、お気軽にお問い合わせください。
+              スマートシティソリューションについてのご質問や導入のご相談など、
+            </p>
+            <p className="mt-4 text-xl text-white opacity-90 max-w-3xl mx-auto">
+              お気軽にお問い合わせください。
             </p>
           </div>
         </div>
@@ -193,7 +196,7 @@ export default function ContactPage() {
                       <span className="ml-3">Email: info@example.com</span>
                     </dd>
                   </dl>
-                  <ul role="list" className="mt-8 flex space-x-12">
+                  {/* <ul role="list" className="mt-8 flex space-x-12">
                     <li>
                       <a className="text-blue-200 hover:text-blue-100" href="#" target="_blank" rel="noopener noreferrer">
                         <span className="sr-only">Facebook</span>
@@ -241,7 +244,7 @@ export default function ContactPage() {
                         </svg>
                       </a>
                     </li>
-                  </ul>
+                  </ul> */}
                 </div>
               </div>
 

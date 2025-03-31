@@ -304,14 +304,11 @@ export default function HomePage() {
       <div className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:text-center">
-            <h2 className="text-base text-[#00a86b] font-semibold tracking-wide uppercase">
-              差別化ポイント
-            </h2>
             <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
               私たちの強み
             </p>
             <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-              10人規模の機動的な組織体制で、クライアント固有のニーズに迅速に対応します。
+              機動的な組織体制で、クライアント固有のニーズに迅速に対応します。
             </p>
           </div>
 
@@ -391,7 +388,7 @@ export default function HomePage() {
           <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
             <div className="inline-flex rounded-md shadow">
               <Link href="/contact">
-                <Button size="lg" className="bg-white text-[#0056b3] hover:bg-gray-100">
+                <Button variant="outline" size="lg" className="bg-white hover:bg-gray-100">
                   お問い合わせ
                 </Button>
               </Link>
