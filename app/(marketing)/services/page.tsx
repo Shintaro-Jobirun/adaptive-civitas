@@ -1,235 +1,161 @@
-// app/(marketing)/services/page.tsx
 "use client"
 
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
+import ImprovedServiceCards from '@/components/services/ImprovedServiceCards';
+import { CategoryTabs, Tabs, FAQ } from '@/components/services/';
+import { servicesData } from './data';
+import { Service, Tab } from '@/types/servicesTypes';
 
-interface ServiceSection {
-  id: string;
-  title: string;
-  description: string;
-  features: {
-    name: string;
-    description: string;
-  }[];
-  imageUrl?: string;
-}
-
-const services: ServiceSection[] = [
-  {
-    id: 'traffic',
-    title: '交通',
-    description:
-      'AI技術を活用した交通管理ソリューションで、渋滞の軽減と交通フローの最適化を実現します。リアルタイムデータと機械学習モデルにより、正確な交通予測と最適な経路提案が可能です。',
-    features: [
-      {
-        name: 'AI交通量計測システム',
-        description: '街頭カメラを活用した車両・歩行者・自転車の自動カウント、時間帯別・車種別の詳細なデータ収集、ダッシュボードによるリアルタイムモニタリングを提供します。',
-      },
-      {
-        name: '交通予測分析',
-        description: '機械学習モデルによる交通量予測、渋滞予測と最適経路提案、イベント時や災害時の交通シミュレーションを実現します。',
-      },
-    ],
-  },
-  {
-    id: 'environment',
-    title: '環境モニタリング',
-    description:
-      '低コストセンサーネットワークと高度なAI分析で、大気質や騒音レベルをリアルタイムに監視します。環境データの可視化と予測分析により、都市環境の改善と住民の健康保護を支援します。',
-    features: [
-      {
-        name: '大気質モニタリングシステム',
-        description: '低コストセンサーネットワークによる大気汚染物質の測定、地点別・時間別の大気質データ可視化、健康リスク予測と住民向け通知システムを提供します。',
-      },
-      {
-        name: '騒音・振動モニタリング',
-        description: '都市環境における騒音レベル測定、工事現場や交通機関からの振動監視、規制基準超過の自動アラート機能を実装します。',
-      },
-    ],
-  },
-  {
-    id: 'energy',
-    title: 'エネルギー最適化',
-    description:
-      '機械学習を用いたエネルギー消費パターン分析で、無駄を特定し最適化します。中小企業向けの省エネ対策やマイクログリッド管理により、コスト削減と環境負荷軽減を同時に実現します。',
-    features: [
-      {
-        name: '中小企業向けエネルギー消費最適化',
-        description: '電力使用パターン分析と無駄の検出、機械学習による省エネ施策提案、コスト削減効果の可視化と検証を行います。',
-      },
-      {
-        name: '地域マイクログリッド管理',
-        description: '分散型エネルギーリソースの統合管理、需給バランス最適化によるエネルギーコスト削減、災害時のレジリエンス強化を支援します。',
-      },
-    ],
-  },
-  {
-    id: 'security',
-    title: '防災・セキュリティ',
-    description:
-      'AIによる映像解析と異常検知で、セキュリティリスクや災害の早期発見を実現。リアルタイムアラートと避難支援システムにより、安全・安心な都市環境の構築に貢献します。',
-    features: [
-      {
-        name: 'AI異常検知システム',
-        description: '監視カメラ映像からの不審行動自動検出、火災・水害などの早期発見、管理者へのリアルタイムアラート配信を実現します。',
-      },
-      {
-        name: '災害予測・避難支援',
-        description: '気象データと地理情報を組み合わせた災害リスク評価、避難経路最適化と住民への情報提供、要支援者の位置把握と優先的支援計画を提供します。',
-      },
-    ],
-  },
-  {
-    id: 'infrastructure',
-    title: 'スマートインフラ管理',
-    description:
-      'センサーデータとAI分析によるインフラの状態モニタリングと劣化予測を提供。予防的メンテナンスで長期コスト削減を実現し、上下水道システムの最適化で資源利用効率を向上させます。',
-    features: [
-      {
-        name: 'インフラ劣化予測',
-        description: 'センサーデータに基づく道路・橋梁の劣化予測、優先的メンテナンス箇所の特定、予防的保守による長期コスト削減を支援します。',
-      },
-      {
-        name: '上下水道最適化',
-        description: '漏水検出と節水推進、水質モニタリングと異常検知、使用量予測に基づく供給最適化を行います。',
-      },
-    ],
-  },
-  {
-    id: 'economic',
-    title: '地域経済活性化',
-    description:
-      '匿名化された人流データとAI分析で、来街者や観光客の行動パターンを把握。データ駆動型の地域経済活性化戦略と効果的な観光プロモーションを支援します。',
-    features: [
-      {
-        name: '来街者分析・商圏分析',
-        description: 'Wi-Fiセンサーによる人流データ収集、来街者の属性・行動パターン分析、小売店・飲食店向け需要予測を提供します。',
-      },
-      {
-        name: '観光客行動分析',
-        description: '観光客の移動経路・滞在時間分析、多言語観光案内の最適配置提案、観光資源の効果的活用戦略立案を支援します。',
-      },
-    ],
-  },
-];
-
-export default function ServicesPage() {
+// メインサービスページコンポーネント
+const ServicesPage: React.FC = () => {
+  const [activeCategory, setActiveCategory] = useState<string>('revitalization');
+  const [activeTab, setActiveTab] = useState<string>(servicesData[0].id);
+  
+  // カテゴリー変更時に、そのカテゴリーの最初のサービスをアクティブにする
+  const handleCategoryChange = (category: string): void => {
+    setActiveCategory(category);
+    const firstServiceInCategory = servicesData.find(service => service.category === category);
+    if (firstServiceInCategory) {
+      setActiveTab(firstServiceInCategory.id);
+    }
+  };
+  
+  // 現在のカテゴリーに属するサービス
+  const servicesInCategory = servicesData.filter(service => service.category === activeCategory);
+  
+  // タブ定義
+  const tabs: Tab[] = servicesInCategory.map(service => ({
+    id: service.id,
+    name: service.name
+  }));
+  
+  // 現在アクティブなサービス
+  const activeService = servicesData.find(service => service.id === activeTab);
+  
+  // アクセントカラー
+  const accentColor: string = activeCategory === 'revitalization' ? 'bg-[#0056b3] text-white' : 'bg-[#00a86b] text-white';
+  const textAccentColor: string = activeCategory === 'revitalization' ? 'text-[#0056b3]' : 'text-[#00a86b]';
+  
   return (
     <div className="bg-white">
       {/* ヘッダーセクション */}
-      <div className="bg-[#0056b3] py-12 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className={`py-20 relative overflow-hidden transition-all duration-500 ${activeCategory === 'revitalization' ? 'bg-gradient-to-r from-blue-600 to-blue-700' : 'bg-gradient-to-r from-green-600 to-green-700'}`}>
+        {/* 装飾的な背景要素 */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full opacity-10">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+          </div>
+          <div className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4">
+            <svg width="400" height="400" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <path fill="white" opacity="0.05" d="M41.2,-70.6C55.9,-64.7,72,-56.9,80.2,-43.7C88.5,-30.5,88.9,-12,85.9,5.2C82.9,22.3,76.6,38.2,66.1,51C55.6,63.8,40.8,73.5,25,78.3C9.2,83,-7.7,82.8,-23.9,78.3C-40.1,73.8,-55.6,65,-69.3,52C-83,39,-94.9,21.8,-96.7,3.4C-98.5,-15,-90.3,-34.1,-78.1,-49.4C-66,-64.6,-50,-75.9,-34.2,-81.3C-18.4,-86.7,-2.8,-86.3,11.7,-83.2C26.2,-80.1,52.5,-74.2,41.2,-70.6Z" transform="translate(100 100)" />
+            </svg>
+          </div>
+          <div className="absolute bottom-0 left-0 transform -translate-x-1/4 translate-y-1/4">
+            <svg width="400" height="400" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <path fill="white" opacity="0.05" d="M47.7,-79.1C62.9,-71.9,76.8,-60.5,83.8,-45.6C90.7,-30.7,90.6,-12.4,87.4,4.7C84.2,21.8,77.8,37.7,67.4,50.8C57,63.9,42.5,74.1,26.7,79.5C10.9,84.9,-6.2,85.3,-22.7,81.3C-39.2,77.3,-55.1,68.8,-68.3,55.9C-81.5,43,-92,25.6,-93.1,7.4C-94.2,-10.7,-85.9,-29.6,-74.1,-43.9C-62.2,-58.3,-46.7,-68.2,-31.6,-75.3C-16.5,-82.5,-1.9,-87.1,12.3,-87.6C26.4,-88.1,52.9,-84.4,47.7,-79.1Z" transform="translate(100 100)" />
+            </svg>
+          </div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <h1 className="text-3xl font-extrabold text-white sm:text-4xl lg:text-5xl">
+            <h1 className="text-4xl font-extrabold text-white sm:text-5xl lg:text-6xl">
               サービスラインナップ
             </h1>
-            <p className="mt-4 text-xl text-white opacity-90 max-w-3xl mx-auto">
-              最先端AI技術を活用した、中小企業や地方自治体向けのカスタマイズ可能なスマートシティソリューション
+            <p className="mt-6 text-xl text-white opacity-90 max-w-3xl mx-auto">
+              最先端AI技術を活用した、中小企業や地方自治体向けの
+              <br className="hidden md:block" />
+              カスタマイズ可能なスマートシティソリューション
             </p>
           </div>
         </div>
       </div>
 
-      {/* ナビゲーション */}
-      <div className="border-b border-gray-200 sticky top-0 bg-white z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex overflow-x-auto py-4 hide-scrollbar">
-            <ul className="flex space-x-8">
-              {services.map((service) => (
-                <li key={service.id}>
-                  <a
-                    href={`#${service.id}`}
-                    className="text-sm font-medium text-gray-500 hover:text-gray-900 whitespace-nowrap"
-                  >
-                    {service.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-      </div>
-
-      {/* サービス詳細セクション */}
-      <div className="py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-20">
-            {services.map((service, index) => (
-              <section
-                id={service.id}
-                key={service.id}
-                className={`grid grid-cols-1 lg:grid-cols-2 gap-12 ${
-                  index % 2 === 1 ? 'lg:grid-flow-dense' : ''
+      {/* メインコンテンツ */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {/* カテゴリータブ */}
+        <CategoryTabs activeCategory={activeCategory} onCategoryChange={handleCategoryChange} />
+        
+        {/* サービスタブ */}
+        <Tabs 
+          tabs={tabs} 
+          activeTab={activeTab} 
+          onTabChange={setActiveTab} 
+          accentColor={accentColor}
+        />
+        
+        {/* アクティブタブのコンテンツ */}
+        {activeService && (
+          <ImprovedServiceCards 
+            activeService={activeService} 
+            activeCategory={activeCategory} 
+            textAccentColor={textAccentColor}
+          />
+        )}
+        
+        {/* よくある質問 */}
+        {activeService && (
+          <div className="mt-8 mb-16">
+            <FAQ faqs={activeService.faqs} />
+          </div>
+        )}
+        
+        {/* CTAセクション */}
+        <div className="mt-16 text-center p-10 rounded-2xl relative overflow-hidden transition-all duration-500" 
+          style={{
+            background: activeCategory === 'revitalization' 
+              ? 'linear-gradient(135deg, #f0f7ff 0%, #e0efff 100%)' 
+              : 'linear-gradient(135deg, #f0fff7 0%, #e0ffef 100%)',
+            boxShadow: '0 10px 40px -10px rgba(0, 86, 179, 0.1)',
+          }}
+        >
+          {/* 装飾的な背景要素 */}
+          <div className="absolute inset-0 overflow-hidden">
+            <svg className="absolute bottom-0 left-0 h-80 w-80 opacity-5" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <path fill={activeCategory === 'revitalization' ? '#0056b3' : '#00a86b'} d="M41.3,-69.8C53.4,-63.5,63.2,-52.3,70.9,-39.2C78.6,-26.2,84.3,-11.3,83.2,2.9C82.1,17.1,74.3,30.6,65.5,42.9C56.7,55.2,46.9,66.3,34.4,72.5C21.9,78.7,6.6,79.9,-8.6,78.8C-23.7,77.7,-38.8,74.2,-51.1,66.1C-63.4,58,-73,45.2,-78.2,30.6C-83.4,16,-84.3,-0.4,-79.3,-14.2C-74.3,-28.1,-63.5,-39.5,-51.1,-46.4C-38.6,-53.4,-24.6,-56,-11.1,-60.7C2.3,-65.3,16.2,-72,29.2,-75.1C42.3,-78.3,54.4,-77.8,41.3,-69.8Z" transform="translate(100 100)" />
+            </svg>
+            <svg className="absolute top-0 right-0 h-64 w-64 opacity-5" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <path fill={activeCategory === 'revitalization' ? '#0056b3' : '#00a86b'} d="M45.3,-75.3C58.9,-67.3,70.2,-55.4,77.7,-41.3C85.2,-27.1,88.8,-10.7,87.2,5.3C85.7,21.2,78.9,36.7,68.9,49.8C58.8,62.8,45.5,73.5,30.5,78.5C15.5,83.6,-1.3,83.1,-17,78.9C-32.8,74.7,-47.5,67,-59.3,55.5C-71.2,44,-80.2,28.8,-83.1,12.4C-86,-4,-82.9,-21.5,-75.2,-36.1C-67.6,-50.7,-55.4,-62.3,-41.7,-70C-28,-77.6,-12.7,-81.3,1.5,-83.9C15.8,-86.4,31.6,-87.8,45.3,-75.3Z" transform="translate(100 100)" />
+            </svg>
+          </div>
+          
+          <div className="relative z-10">
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">カスタマイズ可能なソリューション</h3>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
+              地域や企業の特性に合わせて最適なソリューションをカスタマイズします。
+              <br />
+              専門家チームがニーズをヒアリングし、最適な提案を行います。
+            </p>
+            <Link href="/contact">
+              <Button 
+                size="lg" 
+                className={`transition-all duration-300 transform hover:scale-105 shadow-lg ${
+                  activeCategory === 'revitalization' 
+                    ? 'bg-[#0056b3] hover:bg-[#004494]' 
+                    : 'bg-[#00a86b] hover:bg-[#008f5b]'
                 }`}
               >
-                <div className={index % 2 === 1 ? 'lg:col-start-2' : ''}>
-                  <h2 className="text-3xl font-bold text-gray-900">{service.title}</h2>
-                  <p className="mt-4 text-lg text-gray-500">{service.description}</p>
-                  
-                  <div className="mt-8 space-y-8">
-                    {service.features.map((feature) => (
-                      <div key={feature.name} className="relative">
-                        <dt>
-                          <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-[#0056b3] text-white">
-                            <svg
-                              className="h-6 w-6"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              aria-hidden="true"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                          </div>
-                          <p className="ml-16 text-xl font-medium text-gray-900">
-                            {feature.name}
-                          </p>
-                        </dt>
-                        <dd className="mt-2 ml-16 text-base text-gray-500">
-                          {feature.description}
-                        </dd>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="mt-10">
-                    <Link href="/contact">
-                      <Button>詳細を相談する</Button>
-                    </Link>
-                  </div>
-                </div>
-                
-                <div className={`${index % 2 === 1 ? 'lg:col-start-1' : ''} flex items-center`}>
-                  <div className="bg-gray-200 w-full aspect-video rounded-lg flex items-center justify-center">
-                    <svg
-                      className="h-24 w-24 text-gray-400"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </section>
-            ))}
+                <span className="flex items-center">
+                  <svg className="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                  無料相談・お問い合わせ
+                </span>
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
-
+      
       {/* スタイル追加 */}
       <style jsx global>{`
         .hide-scrollbar::-webkit-scrollbar {
@@ -240,25 +166,8 @@ export default function ServicesPage() {
           scrollbar-width: none;
         }
       `}</style>
-
-      {/* CTA セクション */}
-      <div className="bg-[#f0f7ff] py-12 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
-              カスタマイズ可能なソリューション
-            </h2>
-            <p className="mt-4 text-lg text-gray-500 max-w-3xl mx-auto">
-              地域や企業の特性に合わせて最適なソリューションをカスタマイズします。専門家チームがニーズをヒアリングし、最適な提案を行います。
-            </p>
-            <div className="mt-8 flex justify-center">
-              <Link href="/contact">
-                <Button size="lg">お問い合わせ</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
-}
+};
+
+export default ServicesPage;

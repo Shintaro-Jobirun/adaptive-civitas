@@ -1,7 +1,16 @@
 // app/(marketing)/page.tsx
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
-import { ArrowRightIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { 
+  TruckIcon, 
+  GlobeAsiaAustraliaIcon, 
+  BoltIcon, 
+  ShieldCheckIcon, 
+  ArrowRightIcon,
+  CheckCircleIcon,
+  WrenchScrewdriverIcon,
+  UsersIcon
+} from '@heroicons/react/24/outline';
 
 export default function HomePage() {
   return (
@@ -33,26 +42,26 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* 主力サービス紹介セクション */}
-      <div className="py-16 bg-gray-50">
+      {/* AI技術コアセクション */}
+      <div className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="lg:text-center">
-            <h2 className="text-base text-[#ff7e00] font-semibold tracking-wide uppercase">
-              主力サービス
+            <h2 className="text-base text-[#0056b3] font-semibold tracking-wide uppercase">
+              テクノロジーコア
             </h2>
             <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              豊富な実績と専門性を活かした<br />核となるソリューション
+              3つのAIコア技術から生まれる<br />統合型スマートシティソリューション
             </p>
             <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-              高度なAI技術と実績に基づいた、即導入可能な主力ソリューションをご提供します。
+              先進的なAI技術を基盤に、あらゆる都市課題に対応する総合的なエコシステムを構築します。
             </p>
           </div>
 
           <div className="mt-16">
-            <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
-              {/* 交通ソリューション（主力） */}
+            <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
+              {/* 画像処理AI */}
               <div className="bg-white overflow-hidden shadow-lg rounded-lg border-t-4 border-[#0056b3] hover:shadow-xl transition-shadow duration-300">
-                <div className="p-8">
+                <div className="p-6">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 bg-[#0056b3] rounded-md p-3">
                       <svg
@@ -66,34 +75,137 @@ export default function HomePage() {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                          d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
                         />
                       </svg>
                     </div>
                     <div className="ml-4">
-                      <h3 className="text-xl font-bold text-gray-900">交通ソリューション</h3>
+                      <h3 className="text-xl font-bold text-gray-900">画像処理AI</h3>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-base text-gray-600">
+                      高度な画像認識技術により、交通量計測、インフラ劣化検出、防犯監視など多様な都市データを収集・分析します。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 異常検知AI */}
+              <div className="bg-white overflow-hidden shadow-lg rounded-lg border-t-4 border-[#0056b3] hover:shadow-xl transition-shadow duration-300">
+                <div className="p-6">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-[#0056b3] rounded-md p-3">
+                      <svg
+                        className="h-8 w-8 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-xl font-bold text-gray-900">異常検知AI</h3>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-base text-gray-600">
+                      パターン認識技術により、不審行動の検出、設備の異常、環境変化などを早期に発見し、迅速な対応を可能にします。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 予測AI */}
+              <div className="bg-white overflow-hidden shadow-lg rounded-lg border-t-4 border-[#0056b3] hover:shadow-xl transition-shadow duration-300">
+                <div className="p-6">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-[#0056b3] rounded-md p-3">
+                      <svg
+                        className="h-8 w-8 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-xl font-bold text-gray-900">予測AI</h3>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-base text-gray-600">
+                      過去データから未来の動向を予測し、交通量、エネルギー需要、災害リスクなどを事前に把握して最適な対策を立案します。
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 新ソリューションマップセクション - 大分類による区分け */}
+      <div className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="lg:text-center">
+            <h2 className="text-base text-[#ff7e00] font-semibold tracking-wide uppercase">
+              ソリューションマップ
+            </h2>
+            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+              スマートシティを構成する<br />2つの柱と6つの連携ソリューション
+            </p>
+            <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+              各ソリューションは独立して導入可能ですが、連携することで相乗効果を発揮します。
+            </p>
+          </div>
+
+          {/* 地域活性化セクション */}
+          <div className="mt-16">
+            <h3 className="text-2xl font-bold text-[#0056b3] mb-6">地域活性化</h3>
+            <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
+              {/* 交通ソリューション */}
+              <div className="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="p-6">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-[#0056b3] rounded-md p-3">
+                      <TruckIcon className="h-6 w-6 text-white" />
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-lg font-bold text-gray-900">交通ソリューション</h3>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-base text-gray-600">
+                      AI画像認識による交通量計測と予測分析で渋滞を軽減し、最適な交通管理を実現します。
+                    </p>
+                    <div className="mt-3 flex items-center text-sm text-[#0056b3]">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        即時導入可能
+                      </span>
                     </div>
                   </div>
                   <div className="mt-6">
-                    <p className="text-base text-gray-600">
-                      AI画像認識技術を活用した交通量計測システムと交通予測分析により、渋滞を軽減し、最適な交通管理を実現します。既存カメラを活用した低コスト導入が可能です。
-                    </p>
-                    <ul className="mt-4 space-y-2">
-                      <li className="flex items-start">
-                        <CheckCircleIcon className="h-5 w-5 text-[#0056b3] mt-0.5 mr-2 flex-shrink-0" />
-                        <span className="text-sm text-gray-600">AI交通量計測システム</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircleIcon className="h-5 w-5 text-[#0056b3] mt-0.5 mr-2 flex-shrink-0" />
-                        <span className="text-sm text-gray-600">機械学習による交通量予測</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircleIcon className="h-5 w-5 text-[#0056b3] mt-0.5 mr-2 flex-shrink-0" />
-                        <span className="text-sm text-gray-600">リアルタイムダッシュボード</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="mt-8">
                     <Link
                       href="/services#traffic"
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#0056b3] hover:bg-[#004494] focus:outline-none"
@@ -105,50 +217,28 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* 地域経済活性化（主力） */}
-              <div className="bg-white overflow-hidden shadow-lg rounded-lg border-t-4 border-[#0056b3] hover:shadow-xl transition-shadow duration-300">
-                <div className="p-8">
+              {/* 地域経済活性化 */}
+              <div className="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="p-6">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 bg-[#0056b3] rounded-md p-3">
-                      <svg
-                        className="h-8 w-8 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
+                      <UsersIcon className="h-6 w-6 text-white" />
                     </div>
                     <div className="ml-4">
-                      <h3 className="text-xl font-bold text-gray-900">地域経済活性化</h3>
+                      <h3 className="text-lg font-bold text-gray-900">地域経済活性化</h3>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-base text-gray-600">
+                      来街者分析と観光客行動分析により、地域経済の活性化と効果的な観光戦略を支援します。
+                    </p>
+                    <div className="mt-3 flex items-center text-sm text-[#0056b3]">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        即時導入可能
+                      </span>
                     </div>
                   </div>
                   <div className="mt-6">
-                    <p className="text-base text-gray-600">
-                      来街者分析・商圏分析と観光客行動分析により、地域経済の活性化と効果的な観光戦略を支援します。Wi-Fiセンサーによる人流データ収集と高度な分析を提供します。
-                    </p>
-                    <ul className="mt-4 space-y-2">
-                      <li className="flex items-start">
-                        <CheckCircleIcon className="h-5 w-5 text-[#0056b3] mt-0.5 mr-2 flex-shrink-0" />
-                        <span className="text-sm text-gray-600">来街者行動パターン分析</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircleIcon className="h-5 w-5 text-[#0056b3] mt-0.5 mr-2 flex-shrink-0" />
-                        <span className="text-sm text-gray-600">小売店・飲食店向け需要予測</span>
-                      </li>
-                      <li className="flex items-start">
-                        <CheckCircleIcon className="h-5 w-5 text-[#0056b3] mt-0.5 mr-2 flex-shrink-0" />
-                        <span className="text-sm text-gray-600">観光資源の効果的活用戦略</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="mt-8">
                     <Link
                       href="/services#economic"
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#0056b3] hover:bg-[#004494] focus:outline-none"
@@ -161,188 +251,225 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* 補助サービス概要セクション */}
-      <div className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:text-center">
-            <h2 className="text-base text-[#00a86b] font-semibold tracking-wide uppercase">
-              補助サービス
-            </h2>
-            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-              多様なニーズに応える<br />追加ソリューション
-            </p>
-            <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-              AI技術と提携パートナーとの連携により、幅広い都市課題に対応します。
-            </p>
-          </div>
-
+          {/* 地域資源管理セクション */}
           <div className="mt-16">
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-              {/* 環境モニタリング（補助） */}
-              <div className="bg-white overflow-hidden shadow rounded-lg border-t-2 border-[#00a86b]">
+            <h3 className="text-2xl font-bold text-[#00a86b] mb-6">地域資源管理</h3>
+            <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
+              {/* 環境モニタリング */}
+              <div className="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="p-6">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 bg-[#00a86b] rounded-md p-3">
-                      <svg
-                        className="h-6 w-6 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
+                      <GlobeAsiaAustraliaIcon className="h-6 w-6 text-white" />
                     </div>
                     <div className="ml-4">
-                      <h3 className="text-lg font-medium text-gray-900">環境モニタリング</h3>
+                      <h3 className="text-lg font-bold text-gray-900">環境モニタリング</h3>
                     </div>
                   </div>
                   <div className="mt-4">
-                    <p className="text-base text-gray-500">
+                    <p className="text-base text-gray-600">
                       大気質や騒音・振動を常時監視し、都市環境の改善と住民の健康を守ります。
                     </p>
+                    <div className="mt-3 flex items-center text-sm text-[#00a86b]">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        パートナーシップ連携
+                      </span>
+                    </div>
                   </div>
                   <div className="mt-6">
                     <Link
                       href="/services#environment"
-                      className="inline-flex items-center text-[#00a86b] hover:text-[#008f5b]"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#00a86b] hover:bg-[#008f5b] focus:outline-none"
                     >
                       詳細を見る
-                      <ArrowRightIcon className="ml-1 h-4 w-4" />
+                      <ArrowRightIcon className="ml-2 h-4 w-4" />
                     </Link>
                   </div>
                 </div>
               </div>
 
-              {/* エネルギー最適化（補助） */}
-              <div className="bg-white overflow-hidden shadow rounded-lg border-t-2 border-[#00a86b]">
+              {/* エネルギー最適化 */}
+              <div className="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="p-6">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 bg-[#00a86b] rounded-md p-3">
-                      <svg
-                        className="h-6 w-6 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 10V3L4 14h7v7l9-11h-7z"
-                        />
-                      </svg>
+                      <BoltIcon className="h-6 w-6 text-white" />
                     </div>
                     <div className="ml-4">
-                      <h3 className="text-lg font-medium text-gray-900">エネルギー最適化</h3>
+                      <h3 className="text-lg font-bold text-gray-900">エネルギー最適化</h3>
                     </div>
                   </div>
                   <div className="mt-4">
-                    <p className="text-base text-gray-500">
+                    <p className="text-base text-gray-600">
                       機械学習による消費パターン分析で、エネルギー使用の最適化とコスト削減を実現します。
                     </p>
+                    <div className="mt-3 flex items-center text-sm text-[#00a86b]">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        予測AI応用
+                      </span>
+                    </div>
                   </div>
                   <div className="mt-6">
                     <Link
                       href="/services#energy"
-                      className="inline-flex items-center text-[#00a86b] hover:text-[#008f5b]"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#00a86b] hover:bg-[#008f5b] focus:outline-none"
                     >
                       詳細を見る
-                      <ArrowRightIcon className="ml-1 h-4 w-4" />
+                      <ArrowRightIcon className="ml-2 h-4 w-4" />
                     </Link>
                   </div>
                 </div>
               </div>
 
-              {/* 防災・セキュリティ（補助） */}
-              <div className="bg-white overflow-hidden shadow rounded-lg border-t-2 border-[#00a86b]">
+              {/* スマートインフラ管理 */}
+              <div className="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="p-6">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 bg-[#00a86b] rounded-md p-3">
-                      <svg
-                        className="h-6 w-6 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                        />
-                      </svg>
+                      <WrenchScrewdriverIcon className="h-6 w-6 text-white" />
                     </div>
                     <div className="ml-4">
-                      <h3 className="text-lg font-medium text-gray-900">防災・セキュリティ</h3>
+                      <h3 className="text-lg font-bold text-gray-900">スマートインフラ管理</h3>
                     </div>
                   </div>
                   <div className="mt-4">
-                    <p className="text-base text-gray-500">
-                      AI異常検知と災害予測・避難支援システムで、安全・安心な都市空間を構築します。
-                    </p>
-                  </div>
-                  <div className="mt-6">
-                    <Link
-                      href="/services#security"
-                      className="inline-flex items-center text-[#00a86b] hover:text-[#008f5b]"
-                    >
-                      詳細を見る
-                      <ArrowRightIcon className="ml-1 h-4 w-4" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-              {/* スマートインフラ管理（補助） */}
-              <div className="bg-white overflow-hidden shadow rounded-lg border-t-2 border-[#00a86b]">
-                <div className="p-6">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-[#00a86b] rounded-md p-3">
-                      <svg
-                        className="h-6 w-6 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                        />
-                      </svg>
-                    </div>
-                    <div className="ml-4">
-                      <h3 className="text-lg font-medium text-gray-900">スマートインフラ管理</h3>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <p className="text-base text-gray-500">
+                    <p className="text-base text-gray-600">
                       インフラの劣化予測と上下水道最適化で、長期的なコスト削減と持続可能な都市管理を支援します。
                     </p>
+                    <div className="mt-3 flex items-center text-sm text-[#00a86b]">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        パートナーシップ連携
+                      </span>
+                    </div>
                   </div>
                   <div className="mt-6">
                     <Link
                       href="/services#infrastructure"
-                      className="inline-flex items-center text-[#00a86b] hover:text-[#008f5b]"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#00a86b] hover:bg-[#008f5b] focus:outline-none"
                     >
                       詳細を見る
-                      <ArrowRightIcon className="ml-1 h-4 w-4" />
+                      <ArrowRightIcon className="ml-2 h-4 w-4" />
                     </Link>
                   </div>
                 </div>
+              </div>
+
+              {/* 防災・セキュリティ */}
+              <div className="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="p-6">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-[#00a86b] rounded-md p-3">
+                      <ShieldCheckIcon className="h-6 w-6 text-white" />
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-lg font-bold text-gray-900">防災・セキュリティ</h3>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-base text-gray-600">
+                      AI異常検知と災害予測・避難支援システムで、安全・安心な都市空間を構築します。
+                    </p>
+                    <div className="mt-3 flex items-center text-sm text-[#00a86b]">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        即時導入可能
+                      </span>
+                    </div>
+                  </div>
+                  <div className="mt-6">
+                    <Link
+                      href="/services#security"
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#00a86b] hover:bg-[#008f5b] focus:outline-none"
+                    >
+                      詳細を見る
+                      <ArrowRightIcon className="ml-2 h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
+      {/* 導入アプローチセクション */}
+      <div className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="lg:text-center">
+            <h2 className="text-base text-[#ff7e00] font-semibold tracking-wide uppercase">
+              導入アプローチ
+            </h2>
+            <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+              段階的な導入で<br />持続可能なスマートシティへ
+            </p>
+            <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+              予算や優先課題に合わせた柔軟な導入プランをご提案します。
+            </p>
+          </div>
+
+          <div className="mt-16">
+            <div className="relative">
+              {/* 接続線 */}
+              <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+
+              {/* ステップ */}
+              <div className="relative flex justify-between">
+                
+                {/* ステップ1 */}
+                <div className="bg-white px-4">
+                  <div className="bg-[#0056b3] rounded-full h-12 w-12 flex items-center justify-center">
+                    <span className="text-white font-bold">1</span>
+                  </div>
+                  <div className="mt-3">
+                    <h3 className="text-lg font-medium text-gray-900">現状分析</h3>
+                    <p className="mt-2 text-sm text-gray-500 max-w-xs">
+                      既存システム・インフラの評価と<br />クライアント固有の課題分析
+                    </p>
+                  </div>
+                </div>
+
+                {/* ステップ2 */}
+                <div className="bg-white px-4">
+                  <div className="bg-[#0056b3] rounded-full h-12 w-12 flex items-center justify-center">
+                    <span className="text-white font-bold">2</span>
+                  </div>
+                  <div className="mt-3">
+                    <h3 className="text-lg font-medium text-gray-900">最適設計</h3>
+                    <p className="mt-2 text-sm text-gray-500 max-w-xs">
+                      地域特性と予算に合わせた<br />カスタムソリューション設計
+                    </p>
+                  </div>
+                </div>
+
+                {/* ステップ3 */}
+                <div className="bg-white px-4">
+                  <div className="bg-[#0056b3] rounded-full h-12 w-12 flex items-center justify-center">
+                    <span className="text-white font-bold">3</span>
+                  </div>
+                  <div className="mt-3">
+                    <h3 className="text-lg font-medium text-gray-900">段階的導入</h3>
+                    <p className="mt-2 text-sm text-gray-500 max-w-xs">
+                      優先度の高い機能から<br />順次実装と効果検証
+                    </p>
+                  </div>
+                </div>
+
+                {/* ステップ4 */}
+                <div className="bg-white px-4">
+                  <div className="bg-[#0056b3] rounded-full h-12 w-12 flex items-center justify-center">
+                    <span className="text-white font-bold">4</span>
+                  </div>
+                  <div className="mt-3">
+                    <h3 className="text-lg font-medium text-gray-900">継続的改善</h3>
+                    <p className="mt-2 text-sm text-gray-500 max-w-xs">
+                      データ蓄積による精度向上と<br />機能拡張の継続的実施
+                    </p>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -422,6 +549,7 @@ export default function HomePage() {
                   </p>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
@@ -452,6 +580,7 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
     </div>
   );
 }
