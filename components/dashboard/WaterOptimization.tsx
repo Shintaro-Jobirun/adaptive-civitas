@@ -1,11 +1,12 @@
-// components/dashboard/WaterOptimization.tsx
 "use client"
 
 import React, { useState } from 'react';
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area, ComposedChart
+  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area, ComposedChart, TooltipProps // TooltipProps をインポート
 } from 'recharts';
+// recharts の型をインポート (ValueType, NameType は recharts/types から取得)
+import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 
 // --- Type Definitions ---
 type LeakageSeverity = 'high' | 'medium' | 'low';
@@ -248,6 +249,67 @@ const systemData: SystemData[] = [
 // Colors for charts
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
+// --- Tooltip Formatter Functions ---
+
+/**
+ * 汎用的なTooltipフォーマッター関数
+ * @param value - 表示される値 (rechartsによって型が推論される)
+ * @param name - データ系列の名前 (Line, Barなどのnameプロパティ)
+ * @param props - Tooltipに渡されるその他のプロパティ (payloadなどを含む)
+ * @returns フォーマットされたReactノードまたは [Reactノード, 新しい名前] のタプル
+ */
+const customTooltipFormatter = (value: ValueType, name: NameType, props: any): React.ReactNode | [React.ReactNode, NameType] => {
+  // 値が数値の場合のフォーマット
+  if (typeof value === 'number') {
+    // データ系列名に基づいてフォーマットを分岐
+    if (name === '使用量 (m³/時)') return [`${value.toFixed(0)} m³/時`, name];
+    if (name === '水圧 (MPa)') return [`${value.toFixed(2)} MPa`, name];
+    if (name === '水質指数 (%)') return [`${value.toFixed(0)}%`, name];
+    if (name === '使用量 (m³/日)') return [`${value.toLocaleString()} m³/日`, name];
+    if (name === '漏水量 (m³/日)') return [`${value.toLocaleString()} m³/日`, name];
+    if (name === '効率 (%)') return [`${value.toLocaleString()}%`, name]; // 地区別使用量の効率
+    if (name === '降水量 (mm)') return [`${value.toLocaleString()} mm`, name];
+    if (name === '実績値') return [`${value.toLocaleString()} m³`, name]; // 需要予測
+    if (name === '予測値') return [`${value.toLocaleString()} m³`, name]; // 需要予測
+    if (name === '負荷率 (%)') return [`${value}%`, name]; // ポンプ運転
+    if (name === '現在の運転率 (%)') return [`${value}%`, name]; // ポンプ運転
+    if (name === '最適化後の運転率 (%)') return [`${value}%`, name]; // ポンプ運転
+    if (name === '現在の使用量') return [`${value.toLocaleString()} MWh/月`, name]; // エネルギー使用量
+    if (name === '最適化後の使用量') return [`${value.toLocaleString()} MWh/月`, name]; // エネルギー使用量
+    if (name === '使用量') return [`${value.toLocaleString()} m³/日`, name]; // 季節別使用量
+
+    // 上記に一致しない数値データはデフォルトのtoLocaleStringを使用
+    return [`${value.toLocaleString()}`, name];
+  }
+
+  // 需要予測データなどで値が null の場合の処理
+  if (value === null || typeof value === 'undefined') {
+     if (name === '実績値' || name === '予測値') return ['N/A', name];
+  }
+
+  // 値が数値でない場合は、そのまま文字列として表示 (または適切なデフォルト表示)
+  return [String(value), name];
+};
+
+/**
+ * PieChart用のTooltipフォーマッター関数
+ * PieChartのformatterはvalueのみを受け取る場合があるため、分けて定義
+ * @param value - 表示される値 (rechartsによって型が推論される)
+ * @param name - データ系列の名前 (PieのnameKey)
+ * @param props - Tooltipに渡されるその他のプロパティ (payloadなどを含む)
+ * @returns フォーマットされたReactノード
+ */
+const pieTooltipFormatter = (value: ValueType, name: NameType, props: any): React.ReactNode => {
+    // このPieChart (地区別漏水傾向) では value が漏水量(数値)であると想定
+    if (typeof value === 'number') {
+        // name (地区名) はここでは使わず、値のみフォーマット
+        return `${value.toLocaleString()} m³/日`;
+    }
+    // 数値でない場合はそのまま表示
+    return String(value);
+};
+
+
 // Main dashboard component
 const WaterOptimizationDashboard: React.FC = () => {
   // State for selected view
@@ -266,46 +328,46 @@ const WaterOptimizationDashboard: React.FC = () => {
     }
   };
 
-   // Helper function to get color based on status/level
-   const getStatusColor = (status: LeakageSeverity | LeakageStatus | EquipmentStatusType ): string => {
-     switch (status) {
-      case 'high':
-      case 'active': // For leakage alerts and equipment status
-      case 'error':
-        return 'bg-red-100 text-red-800';
-      case 'medium':
-      case 'investigating':
-      case 'warning':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'low':
-      case 'scheduled':
-      case 'maintenance':
-        return 'bg-blue-100 text-blue-800';
-      case 'resolved':
-        return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
+    // Helper function to get color based on status/level
+    const getStatusColor = (status: LeakageSeverity | LeakageStatus | EquipmentStatusType ): string => {
+      switch (status) {
+       case 'high':
+       case 'active': // For leakage alerts and equipment status
+       case 'error':
+         return 'bg-red-100 text-red-800';
+       case 'medium':
+       case 'investigating':
+       case 'warning':
+         return 'bg-yellow-100 text-yellow-800';
+       case 'low':
+       case 'scheduled':
+       case 'maintenance':
+         return 'bg-blue-100 text-blue-800';
+       case 'resolved':
+         return 'bg-green-100 text-green-800';
+       default: return 'bg-gray-100 text-gray-800';
+     }
+   };
 
-   // Helper function to get text based on status/level
-   const getStatusText = (status: LeakageSeverity | LeakageStatus | EquipmentStatusType): string => {
-     switch (status) {
-      // Leakage Severity
-      case 'high': return '高';
-      case 'medium': return '中';
-      case 'low': return '低';
-      // Leakage Status
-      case 'active': return '対応待ち'; // Or '稼働中' for equipment
-      case 'investigating': return '調査中';
-      case 'scheduled': return '修理予定';
-      case 'resolved': return '解決済み';
-      // Equipment Status
-      case 'maintenance': return 'メンテナンス中';
-      case 'warning': return '要注意';
-      case 'error': return '停止中';
-      default: return String(status);
-    }
-  };
+    // Helper function to get text based on status/level
+    const getStatusText = (status: LeakageSeverity | LeakageStatus | EquipmentStatusType): string => {
+      switch (status) {
+       // Leakage Severity
+       case 'high': return '高';
+       case 'medium': return '中';
+       case 'low': return '低';
+       // Leakage Status
+       case 'active': return '対応待ち'; // Or '稼働中' for equipment
+       case 'investigating': return '調査中';
+       case 'scheduled': return '修理予定';
+       case 'resolved': return '解決済み';
+       // Equipment Status
+       case 'maintenance': return 'メンテナンス中';
+       case 'warning': return '要注意';
+       case 'error': return '停止中';
+       default: return String(status); // Fallback for unexpected values
+     }
+   };
 
 
   return (
@@ -325,7 +387,7 @@ const WaterOptimizationDashboard: React.FC = () => {
               <option value="usage">使用量</option>
               <option value="pressure">水圧</option>
               <option value="quality">水質</option>
-              <option value="leakage">漏水</option>
+              {/* <option value="leakage">漏水</option>  Removed leakage as it's not in hourly data */}
             </select>
           </div>
 
@@ -356,9 +418,9 @@ const WaterOptimizationDashboard: React.FC = () => {
             <div className="px-4 py-5 sm:p-6">
               <div className="flex items-center">
                 <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
-                   <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
+                    <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
@@ -367,11 +429,11 @@ const WaterOptimizationDashboard: React.FC = () => {
                     </dt>
                     <dd>
                       <div className="text-lg font-medium text-gray-900">
-                        210 m³/時 {/* Example */}
+                        {waterUsageData[waterUsageData.length - 1]?.usage ?? 'N/A'} m³/時 {/* Display latest usage */}
                       </div>
                       <div className="flex items-baseline text-sm">
                         <span className="text-green-600 font-semibold">前日比</span>
-                        <span className="ml-1 text-gray-500">-2.8%</span>
+                        <span className="ml-1 text-gray-500">-2.8%</span> {/* Example data */}
                       </div>
                     </dd>
                   </dl>
@@ -386,8 +448,8 @@ const WaterOptimizationDashboard: React.FC = () => {
               <div className="flex items-center">
                 <div className="flex-shrink-0 bg-green-500 rounded-md p-3">
                    <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-                  </svg>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                    </svg>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
@@ -415,8 +477,8 @@ const WaterOptimizationDashboard: React.FC = () => {
               <div className="flex items-center">
                 <div className="flex-shrink-0 bg-red-500 rounded-md p-3">
                   <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
-                  </svg>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+                    </svg>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
@@ -444,8 +506,8 @@ const WaterOptimizationDashboard: React.FC = () => {
               <div className="flex items-center">
                 <div className="flex-shrink-0 bg-yellow-500 rounded-md p-3">
                   <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
@@ -476,7 +538,7 @@ const WaterOptimizationDashboard: React.FC = () => {
         <>
           {/* Hourly Water Usage/Pressure/Quality Chart */}
           <div className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">24時間の水使用量・水圧・水質推移</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-4">24時間の水使用量・水圧・水質推移 ({getSelectedMetricName(selectedMetric)})</h3>
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
@@ -486,32 +548,35 @@ const WaterOptimizationDashboard: React.FC = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="time" fontSize={12}/>
                   {/* Left Y-axis for Usage */}
-                  <YAxis yAxisId="left" orientation="left" stroke="#0088FE" fontSize={12} unit=" m³/時"/>
-                  {/* Right Y-axis for Pressure and Quality */}
-                  <YAxis yAxisId="right" orientation="right" stroke="#00C49F" fontSize={12} domain={[0, 1]} unit=" MPa"/>
-                  <YAxis yAxisId="quality" orientation="right" stroke="#FFBB28" fontSize={12} domain={[90, 100]} unit="%" dx={40}/> {/* Offset for visibility */}
+                  <YAxis yAxisId="left" orientation="left" stroke="#0088FE" fontSize={12} unit=" m³/時" hide={selectedMetric !== 'usage'}/>
+                  {/* Right Y-axis for Pressure */}
+                  <YAxis yAxisId="rightPressure" orientation="right" stroke="#00C49F" fontSize={12} domain={[0.3, 0.5]} unit=" MPa" hide={selectedMetric !== 'pressure'}/>
+                  {/* Right Y-axis for Quality (offset) */}
+                  <YAxis yAxisId="rightQuality" orientation="right" stroke="#FFBB28" fontSize={12} domain={[90, 100]} unit="%" dx={40} hide={selectedMetric !== 'quality'}/>
 
-                  <Tooltip formatter={(value: number, name: string) => [`${value.toFixed(name === '水圧 (MPa)' ? 2 : 0)}${name.includes('m³') ? ' m³/時' : name.includes('MPa') ? ' MPa' : '%'}`, name]}/>
+                  {/* Use the custom formatter */}
+                  <Tooltip formatter={customTooltipFormatter} />
                   <Legend />
+                  {/* Show selected metric prominently */}
                   {selectedMetric === 'usage' && (
                     <Line yAxisId="left" type="monotone" dataKey="usage" stroke="#0088FE" name="使用量 (m³/時)" strokeWidth={2} dot={false}/>
                   )}
                   {selectedMetric === 'pressure' && (
-                    <Line yAxisId="right" type="monotone" dataKey="pressure" stroke="#00C49F" name="水圧 (MPa)" strokeWidth={2} dot={false}/>
+                    <Line yAxisId="rightPressure" type="monotone" dataKey="pressure" stroke="#00C49F" name="水圧 (MPa)" strokeWidth={2} dot={false}/>
                   )}
                   {selectedMetric === 'quality' && (
-                    <Line yAxisId="quality" type="monotone" dataKey="quality" stroke="#FFBB28" name="水質指数 (%)" strokeWidth={2} dot={false}/>
+                    <Line yAxisId="rightQuality" type="monotone" dataKey="quality" stroke="#FFBB28" name="水質指数 (%)" strokeWidth={2} dot={false}/>
                   )}
-                  {/* Always show other metrics with lower opacity if not selected? Optional */}
+                  {/* Optionally show other metrics with lower opacity */}
                    {selectedMetric !== 'usage' && (
-                     <Line yAxisId="left" type="monotone" dataKey="usage" stroke="#0088FE" strokeOpacity={0.3} name="使用量 (m³/時)" dot={false}/>
-                  )}
+                     <Line yAxisId="left" type="monotone" dataKey="usage" stroke="#0088FE" strokeOpacity={0.3} name="使用量 (m³/時)" dot={false} hide={true}/> // hide in legend
+                   )}
                    {selectedMetric !== 'pressure' && (
-                     <Line yAxisId="right" type="monotone" dataKey="pressure" stroke="#00C49F" strokeOpacity={0.3} name="水圧 (MPa)" dot={false}/>
-                  )}
+                     <Line yAxisId="rightPressure" type="monotone" dataKey="pressure" stroke="#00C49F" strokeOpacity={0.3} name="水圧 (MPa)" dot={false} hide={true}/> // hide in legend
+                   )}
                    {selectedMetric !== 'quality' && (
-                     <Line yAxisId="quality" type="monotone" dataKey="quality" stroke="#FFBB28" strokeOpacity={0.3} name="水質指数 (%)" dot={false}/>
-                  )}
+                     <Line yAxisId="rightQuality" type="monotone" dataKey="quality" stroke="#FFBB28" strokeOpacity={0.3} name="水質指数 (%)" dot={false} hide={true}/> // hide in legend
+                   )}
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -521,7 +586,7 @@ const WaterOptimizationDashboard: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* District Usage Bar Chart */}
             <div className="bg-white p-4 rounded-lg shadow-md md:col-span-2">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">地区別水使用量・漏水率</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">地区別水使用量・漏水量</h3>
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
@@ -530,14 +595,14 @@ const WaterOptimizationDashboard: React.FC = () => {
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis type="number" fontSize={12}/>
+                    <XAxis type="number" fontSize={12} unit=" m³/日"/>
                     <YAxis dataKey="district" type="category" width={80} fontSize={12}/>
-                    <Tooltip formatter={(value: number, name: string) => [`${value.toLocaleString()}${name.includes('効率') ? '%' : ' m³/日'}`, name]}/>
+                    {/* Use the custom formatter */}
+                    <Tooltip formatter={customTooltipFormatter}/>
                     <Legend wrapperStyle={{fontSize: "12px"}}/>
                     <Bar dataKey="usage" fill="#0088FE" name="使用量 (m³/日)" />
                     <Bar dataKey="leakage" fill="#FF8042" name="漏水量 (m³/日)" />
-                    {/* Efficiency could be a line or separate chart */}
-                    {/* <Line type="monotone" dataKey="efficiency" stroke="#82ca9d" name="効率 (%)" yAxisId="right"/> */}
+                    {/* Efficiency could be added as another bar or a line on a separate axis if needed */}
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -557,11 +622,46 @@ const WaterOptimizationDashboard: React.FC = () => {
                       </div>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                      <div className="bg-green-500 h-2 rounded-full" style={{ width: `${Math.min((item.value / (typeof item.limit === 'number' ? item.limit : parseFloat(item.limit.split('-')[1]))) * 100, 100)}%` }}></div>
+                      {/* Calculate percentage based on limit (handle string range) */}
+                      <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(() => {
+                          const upperLimit = typeof item.limit === 'number' ? item.limit : parseFloat(item.limit.split('-')[1]);
+                          const lowerLimit = typeof item.limit === 'number' ? 0 : parseFloat(item.limit.split('-')[0]); // Handle range for pH etc.
+                          if (isNaN(upperLimit)) return 0; // Handle invalid limit
+                          // For parameters like pH, being within the range is good. For others, lower is better.
+                          // Simple approach: assume lower is better unless it's pH
+                          if (item.parameter === 'pH') {
+                              return (item.value >= lowerLimit && item.value <= upperLimit) ? 100 : 0; // 100% if within range
+                          } else {
+                              return Math.min((item.value / upperLimit) * 100, 100);
+                          }
+                      })()}%` }}></div>
                     </div>
                     <div className="flex justify-between text-xs text-gray-500 mt-1">
                       <span>基準値: {item.limit}</span>
-                      <span className="text-green-600 font-medium">適合</span>
+                      {/* Determine status based on value and limit */}
+                      <span className={`${
+                          (() => {
+                              const upperLimit = typeof item.limit === 'number' ? item.limit : parseFloat(item.limit.split('-')[1]);
+                              const lowerLimit = typeof item.limit === 'number' ? 0 : parseFloat(item.limit.split('-')[0]);
+                              if (item.parameter === 'pH') {
+                                  return (item.value >= lowerLimit && item.value <= upperLimit) ? 'text-green-600 font-medium' : 'text-red-600 font-medium';
+                              } else if (item.parameter === '大腸菌') {
+                                  return item.value <= upperLimit ? 'text-green-600 font-medium' : 'text-red-600 font-medium';
+                              } else {
+                                  return item.value <= upperLimit ? 'text-green-600 font-medium' : 'text-yellow-600 font-medium'; // Use yellow for exceeding non-critical limits
+                              }
+                          })()
+                      }`}>
+                          {(() => {
+                              const upperLimit = typeof item.limit === 'number' ? item.limit : parseFloat(item.limit.split('-')[1]);
+                              const lowerLimit = typeof item.limit === 'number' ? 0 : parseFloat(item.limit.split('-')[0]);
+                               if (item.parameter === 'pH') {
+                                  return (item.value >= lowerLimit && item.value <= upperLimit) ? '適合' : '基準外';
+                              } else {
+                                  return item.value <= upperLimit ? '適合' : (item.parameter === '大腸菌' ? '不適合' : '要注意');
+                              }
+                          })()}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -645,7 +745,8 @@ const WaterOptimizationDashboard: React.FC = () => {
                   <YAxis yAxisId="left" orientation="left" stroke="#0088FE" fontSize={12} unit=" m³"/>
                   {/* Right Y-axis for Rainfall */}
                   <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" fontSize={12} unit=" mm"/>
-                  <Tooltip formatter={(value: number, name: string) => [`${value.toLocaleString()}${name.includes('mm') ? 'mm' : ' m³'}`, name]}/>
+                  {/* Use the custom formatter */}
+                  <Tooltip formatter={customTooltipFormatter}/>
                   <Legend wrapperStyle={{fontSize: "12px"}}/>
                   <Bar yAxisId="left" dataKey="usage" fill="#0088FE" name="使用量 (m³/日)" />
                   <Bar yAxisId="left" dataKey="leakage" fill="#FF8042" name="漏水量 (m³/日)" />
@@ -655,25 +756,31 @@ const WaterOptimizationDashboard: React.FC = () => {
             </div>
             {/* Summary Cards for Leakage */}
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-               <div className="bg-blue-50 p-3 rounded-md border border-blue-200">
-                <h4 className="text-sm font-medium text-blue-800 mb-1">週間総使用量</h4>
-                <p className="text-2xl font-bold text-blue-900">29,930 m³</p>
-                <p className="text-xs text-blue-700 mt-1">前週比: +2.1%</p>
-              </div>
+                <div className="bg-blue-50 p-3 rounded-md border border-blue-200">
+                  <h4 className="text-sm font-medium text-blue-800 mb-1">週間総使用量</h4>
+                  <p className="text-2xl font-bold text-blue-900">{weeklyWaterData.reduce((sum, d) => sum + d.usage, 0).toLocaleString()} m³</p>
+                  <p className="text-xs text-blue-700 mt-1">前週比: +2.1%</p> {/* Example */}
+                </div>
               <div className="bg-red-50 p-3 rounded-md border border-red-200">
                 <h4 className="text-sm font-medium text-red-800 mb-1">週間総漏水量</h4>
-                <p className="text-2xl font-bold text-red-900">2,394 m³</p>
-                <p className="text-xs text-red-700 mt-1">前週比: -3.5%</p>
+                <p className="text-2xl font-bold text-red-900">{weeklyWaterData.reduce((sum, d) => sum + d.leakage, 0).toLocaleString()} m³</p>
+                <p className="text-xs text-red-700 mt-1">前週比: -3.5%</p> {/* Example */}
               </div>
               <div className="bg-green-50 p-3 rounded-md border border-green-200">
                 <h4 className="text-sm font-medium text-green-800 mb-1">漏水率</h4>
-                <p className="text-2xl font-bold text-green-900">8.0%</p>
-                <p className="text-xs text-green-700 mt-1">前週比: -0.5%</p>
+                <p className="text-2xl font-bold text-green-900">{
+                    (() => {
+                        const totalUsage = weeklyWaterData.reduce((sum, d) => sum + d.usage, 0);
+                        const totalLeakage = weeklyWaterData.reduce((sum, d) => sum + d.leakage, 0);
+                        return totalUsage > 0 ? ((totalLeakage / totalUsage) * 100).toFixed(1) + '%' : 'N/A';
+                    })()
+                }</p>
+                <p className="text-xs text-green-700 mt-1">前週比: -0.5%</p> {/* Example */}
               </div>
               <div className="bg-yellow-50 p-3 rounded-md border border-yellow-200">
                 <h4 className="text-sm font-medium text-yellow-800 mb-1">節水量（漏水対策）</h4>
-                <p className="text-2xl font-bold text-yellow-900">87 m³/日</p>
-                <p className="text-xs text-yellow-700 mt-1">先月比: +12%</p>
+                <p className="text-2xl font-bold text-yellow-900">87 m³/日</p> {/* Example */}
+                <p className="text-xs text-yellow-700 mt-1">先月比: +12%</p> {/* Example */}
               </div>
             </div>
           </div>
@@ -691,17 +798,20 @@ const WaterOptimizationDashboard: React.FC = () => {
                       cx="50%"
                       cy="50%"
                       labelLine={false}
-                      label={({ district, leakage, percent }) => percent > 0.05 ? `${district}: ${leakage}m³ (${(percent * 100).toFixed(0)}%)` : ''}
+                      // Adjust label to show district and percentage
+                      label={({ district, leakage, percent }) => percent > 0.05 ? `${district}: ${(percent * 100).toFixed(0)}%` : ''}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="leakage" // Use leakage data
+                      nameKey="district" // Use district for name
                       paddingAngle={2}
                     >
                       {districtUsageData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value: number) => `${value} m³/日`} />
+                    {/* Use the specific pie formatter */}
+                    <Tooltip formatter={pieTooltipFormatter} />
                      <Legend layout="vertical" align="right" verticalAlign="middle" wrapperStyle={{fontSize: "12px"}}/>
                   </PieChart>
                 </ResponsiveContainer>
@@ -710,13 +820,13 @@ const WaterOptimizationDashboard: React.FC = () => {
               <div className="mt-4 grid grid-cols-2 gap-4">
                 <div className="p-3 bg-red-50 rounded-md border border-red-200">
                   <h4 className="text-sm font-medium text-red-800 mb-1">最多漏水地区</h4>
-                  <p className="text-lg font-bold text-red-900">北区</p>
-                  <div className="mt-1 flex items-center text-xs"><span className="font-medium">漏水率: 9.0%</span></div>
+                  <p className="text-lg font-bold text-red-900">{districtUsageData.reduce((prev, current) => (prev.leakage > current.leakage) ? prev : current).district}</p>
+                   <div className="mt-1 flex items-center text-xs"><span className="font-medium">漏水率: {districtUsageData.reduce((prev, current) => (prev.leakage > current.leakage) ? prev : current).efficiency}%</span></div> {/* Note: This shows efficiency, not leakage rate. Needs calculation */}
                 </div>
                 <div className="p-3 bg-green-50 rounded-md border border-green-200">
                   <h4 className="text-sm font-medium text-green-800 mb-1">最少漏水地区</h4>
-                  <p className="text-lg font-bold text-green-900">南区</p>
-                  <div className="mt-1 flex items-center text-xs"><span className="font-medium">漏水率: 6.0%</span></div>
+                  <p className="text-lg font-bold text-green-900">{districtUsageData.reduce((prev, current) => (prev.leakage < current.leakage) ? prev : current).district}</p>
+                   <div className="mt-1 flex items-center text-xs"><span className="font-medium">漏水率: {districtUsageData.reduce((prev, current) => (prev.leakage < current.leakage) ? prev : current).efficiency}%</span></div> {/* Note: Efficiency shown */}
                 </div>
               </div>
             </div>
@@ -732,10 +842,10 @@ const WaterOptimizationDashboard: React.FC = () => {
               <div className="space-y-3 max-h-96 overflow-y-auto pr-2"> {/* Added scroll */}
                 {leakageAlerts.map((alert) => (
                   <div key={alert.id} className={`p-3 rounded-md border ${
-                      alert.status === 'active' ? 'bg-red-50 border-red-200' :
-                      alert.status === 'investigating' ? 'bg-yellow-50 border-yellow-200' :
-                      alert.status === 'scheduled' ? 'bg-blue-50 border-blue-200' : 'bg-green-50 border-green-200'
-                    }`}>
+                    alert.status === 'active' ? 'bg-red-50 border-red-200' :
+                    alert.status === 'investigating' ? 'bg-yellow-50 border-yellow-200' :
+                    alert.status === 'scheduled' ? 'bg-blue-50 border-blue-200' : 'bg-green-50 border-green-200'
+                  }`}>
                     <div className="flex justify-between items-center">
                       <h4 className={`text-sm font-medium ${
                         alert.status === 'active' ? 'text-red-800' :
@@ -753,9 +863,9 @@ const WaterOptimizationDashboard: React.FC = () => {
                       <div className="text-gray-600">検出日時: <span className="font-medium text-gray-800">{alert.detectedAt}</span></div>
                     </div>
                     <div className="mt-2 flex justify-between items-center">
-                       <span className={`text-xs font-medium ${getStatusColor(alert.status)}`}>
-                         {getStatusText(alert.status)}
-                       </span>
+                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(alert.status)}`}>
+                           {getStatusText(alert.status)}
+                         </span>
                       <div>
                         <button type="button" className="text-xs text-green-600 hover:text-green-900 mr-2">詳細</button>
                         {alert.status !== 'resolved' && (
@@ -796,14 +906,14 @@ const WaterOptimizationDashboard: React.FC = () => {
                 </tbody>
               </table>
             </div>
-             <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-200">
-                <h4 className="text-sm font-medium text-blue-800 mb-2">漏水削減による総合効果</h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 text-sm">
-                    <div className="flex items-baseline"><span className="text-blue-700 mr-1">年間総節水量:</span><span className="font-medium text-blue-900">101,900 m³</span></div>
-                    <div className="flex items-baseline"><span className="text-blue-700 mr-1">年間コスト削減:</span><span className="font-medium text-blue-900">4,076 万円</span></div>
-                    <div className="flex items-baseline"><span className="text-blue-700 mr-1">CO₂排出削減量:</span><span className="font-medium text-blue-900">42.8 トン/年</span></div>
-                </div>
-            </div>
+               <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-200">
+                 <h4 className="text-sm font-medium text-blue-800 mb-2">漏水削減による総合効果</h4>
+                 <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 text-sm">
+                     <div className="flex items-baseline"><span className="text-blue-700 mr-1">年間総節水量:</span><span className="font-medium text-blue-900">{waterSavingData.reduce((sum, d) => sum + d.savingsM3, 0).toLocaleString()} m³</span></div>
+                     <div className="flex items-baseline"><span className="text-blue-700 mr-1">年間コスト削減:</span><span className="font-medium text-blue-900">{waterSavingData.reduce((sum, d) => sum + d.costSaving, 0).toLocaleString()} 万円</span></div>
+                     <div className="flex items-baseline"><span className="text-blue-700 mr-1">CO₂排出削減量:</span><span className="font-medium text-blue-900">42.8 トン/年</span></div> {/* Example */}
+                 </div>
+             </div>
           </div>
         </>
       )}
@@ -823,7 +933,8 @@ const WaterOptimizationDashboard: React.FC = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" fontSize={12}/>
                   <YAxis domain={[100000, 170000]} fontSize={10} unit=" m³" tickFormatter={(value) => (value / 1000).toLocaleString() + '千'}/>
-                  <Tooltip formatter={(value: number | null) => value ? `${value.toLocaleString()} m³` : 'N/A'} />
+                  {/* Use the custom formatter */}
+                  <Tooltip formatter={customTooltipFormatter} />
                   <Legend wrapperStyle={{fontSize: "12px"}}/>
                   <Line type="monotone" dataKey="actual" stroke="#0088FE" strokeWidth={2} name="実績値" dot={{ r: 5 }} activeDot={{ r: 8 }} connectNulls/>
                   <Line type="monotone" dataKey="forecast" stroke="#FF8042" strokeWidth={2} strokeDasharray="5 5" name="予測値" connectNulls/>
@@ -832,27 +943,27 @@ const WaterOptimizationDashboard: React.FC = () => {
             </div>
             {/* Forecast Summary Cards */}
              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-blue-50 p-3 rounded-md border border-blue-200">
-                <h4 className="text-sm font-medium text-blue-800 mb-1">年間総需要予測</h4>
-                <p className="text-2xl font-bold text-blue-900">1,586,000 m³</p>
-                <p className="text-xs text-blue-700 mt-1">前年比: +2.8%</p>
-              </div>
-              <div className="bg-orange-50 p-3 rounded-md border border-orange-200">
-                <h4 className="text-sm font-medium text-orange-800 mb-1">ピーク需要</h4>
-                <p className="text-2xl font-bold text-orange-900">162,000 m³</p>
-                <p className="text-xs text-orange-700 mt-1">8月予測 (前年比: +3.2%)</p>
-              </div>
-              <div className="bg-green-50 p-3 rounded-md border border-green-200">
-                <h4 className="text-sm font-medium text-green-800 mb-1">年間取水量予測</h4>
-                <p className="text-2xl font-bold text-green-900">1,726,000 m³</p>
-                <p className="text-xs text-green-700 mt-1">漏水考慮 (前年比: +1.5%)</p>
-              </div>
-              <div className="bg-purple-50 p-3 rounded-md border border-purple-200">
-                <h4 className="text-sm font-medium text-purple-800 mb-1">予測精度</h4>
-                <p className="text-2xl font-bold text-purple-900">95.8%</p>
-                <p className="text-xs text-purple-700 mt-1">過去12ヶ月平均</p>
-              </div>
-            </div>
+               <div className="bg-blue-50 p-3 rounded-md border border-blue-200">
+                 <h4 className="text-sm font-medium text-blue-800 mb-1">年間総需要予測</h4>
+                 <p className="text-2xl font-bold text-blue-900">{demandForecastData.reduce((sum, d) => sum + (d.forecast ?? 0), 0).toLocaleString()} m³</p>
+                 <p className="text-xs text-blue-700 mt-1">前年比: +2.8%</p> {/* Example */}
+               </div>
+               <div className="bg-orange-50 p-3 rounded-md border border-orange-200">
+                 <h4 className="text-sm font-medium text-orange-800 mb-1">ピーク需要</h4>
+                 <p className="text-2xl font-bold text-orange-900">{Math.max(...demandForecastData.map(d => d.forecast ?? 0)).toLocaleString()} m³</p>
+                 <p className="text-xs text-orange-700 mt-1">8月予測 (前年比: +3.2%)</p> {/* Example */}
+               </div>
+               <div className="bg-green-50 p-3 rounded-md border border-green-200">
+                 <h4 className="text-sm font-medium text-green-800 mb-1">年間取水量予測</h4>
+                 <p className="text-2xl font-bold text-green-900">1,726,000 m³</p> {/* Example */}
+                 <p className="text-xs text-green-700 mt-1">漏水考慮 (前年比: +1.5%)</p> {/* Example */}
+               </div>
+               <div className="bg-purple-50 p-3 rounded-md border border-purple-200">
+                 <h4 className="text-sm font-medium text-purple-800 mb-1">予測精度</h4>
+                 <p className="text-2xl font-bold text-purple-900">95.8%</p> {/* Example */}
+                 <p className="text-xs text-purple-700 mt-1">過去12ヶ月平均</p> {/* Example */}
+               </div>
+             </div>
           </div>
 
           {/* Demand Factors and Seasonal Variation */}
@@ -891,13 +1002,13 @@ const WaterOptimizationDashboard: React.FC = () => {
                 </div>
               </div>
                <div className="mt-4 p-3 bg-yellow-50 rounded-md border border-yellow-200">
-                  <h4 className="text-sm font-medium text-yellow-800 mb-2">予測リスク要因</h4>
-                  <ul className="space-y-1 text-sm text-yellow-700 list-disc list-inside">
-                    <li>記録的な猛暑の場合、需要が予測を5-8%上回る可能性</li>
-                    <li>主要工場の生産拡大計画（確認中）</li>
-                    <li>新規マンション開発の完成時期の前倒し</li>
-                  </ul>
-                </div>
+                 <h4 className="text-sm font-medium text-yellow-800 mb-2">予測リスク要因</h4>
+                 <ul className="space-y-1 text-sm text-yellow-700 list-disc list-inside">
+                   <li>記録的な猛暑の場合、需要が予測を5-8%上回る可能性</li>
+                   <li>主要工場の生産拡大計画（確認中）</li>
+                   <li>新規マンション開発の完成時期の前倒し</li>
+                 </ul>
+               </div>
             </div>
 
             {/* Seasonal Variation */}
@@ -911,26 +1022,27 @@ const WaterOptimizationDashboard: React.FC = () => {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="season" fontSize={12}/>
                       <YAxis domain={[3500, 5500]} fontSize={10} unit=" m³"/>
-                      <Tooltip formatter={(value: number) => `${value.toLocaleString()} m³/日`} />
+                      {/* Use the custom formatter */}
+                      <Tooltip formatter={customTooltipFormatter} />
                       <Bar dataKey="usage" fill="#0088FE" name="使用量" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
                <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">用途別需要変動（夏期と冬期の比較）</h4>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead className="bg-gray-50"><tr><th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">用途</th><th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">夏期</th><th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">冬期</th><th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">変動率</th></tr></thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      <tr><td className="px-4 py-2">家庭用</td><td className="px-4 py-2">3,050</td><td className="px-4 py-2">2,430</td><td className="px-4 py-2">+25.5%</td></tr>
-                      <tr><td className="px-4 py-2">商業用</td><td className="px-4 py-2">1,250</td><td className="px-4 py-2">1,050</td><td className="px-4 py-2">+19.0%</td></tr>
-                      <tr><td className="px-4 py-2">工業用</td><td className="px-4 py-2">520</td><td className="px-4 py-2">480</td><td className="px-4 py-2">+8.3%</td></tr>
-                      <tr><td className="px-4 py-2">公共用</td><td className="px-4 py-2">280</td><td className="px-4 py-2">90</td><td className="px-4 py-2">+211.1%</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+                 <h4 className="text-sm font-medium text-gray-700 mb-2">用途別需要変動（夏期と冬期の比較）</h4>
+                 <div className="overflow-x-auto">
+                   <table className="min-w-full divide-y divide-gray-200 text-sm">
+                     <thead className="bg-gray-50"><tr><th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">用途</th><th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">夏期</th><th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">冬期</th><th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">変動率</th></tr></thead>
+                     <tbody className="bg-white divide-y divide-gray-200">
+                       <tr><td className="px-4 py-2">家庭用</td><td className="px-4 py-2">3,050</td><td className="px-4 py-2">2,430</td><td className="px-4 py-2">+25.5%</td></tr>
+                       <tr><td className="px-4 py-2">商業用</td><td className="px-4 py-2">1,250</td><td className="px-4 py-2">1,050</td><td className="px-4 py-2">+19.0%</td></tr>
+                       <tr><td className="px-4 py-2">工業用</td><td className="px-4 py-2">520</td><td className="px-4 py-2">480</td><td className="px-4 py-2">+8.3%</td></tr>
+                       <tr><td className="px-4 py-2">公共用</td><td className="px-4 py-2">280</td><td className="px-4 py-2">90</td><td className="px-4 py-2">+211.1%</td></tr>
+                     </tbody>
+                   </table>
+                 </div>
+               </div>
             </div>
           </div>
         </>
@@ -951,7 +1063,8 @@ const WaterOptimizationDashboard: React.FC = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="time" fontSize={12}/>
                   <YAxis domain={[0, 100]} unit="%" fontSize={12}/>
-                  <Tooltip formatter={(value: number) => `${value}%`}/>
+                  {/* Use the custom formatter */}
+                  <Tooltip formatter={customTooltipFormatter}/>
                   <Legend wrapperStyle={{fontSize: "12px"}}/>
                   <Area type="monotone" dataKey="load" fill="#FFBB28" stroke="#FFBB28" name="負荷率 (%)" fillOpacity={0.3}/>
                   <Line type="monotone" dataKey="current" stroke="#FF8042" strokeWidth={2} name="現在の運転率 (%)" dot={false}/>
@@ -963,23 +1076,23 @@ const WaterOptimizationDashboard: React.FC = () => {
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-blue-50 p-3 rounded-md border border-blue-200">
                 <h4 className="text-sm font-medium text-blue-800 mb-1">エネルギー削減効果</h4>
-                <p className="text-2xl font-bold text-blue-900">15.3%</p>
-                <p className="text-xs text-blue-700 mt-1">年間約1,850万円の削減</p>
+                <p className="text-2xl font-bold text-blue-900">15.3%</p> {/* Example */}
+                <p className="text-xs text-blue-700 mt-1">年間約1,850万円の削減</p> {/* Example */}
               </div>
               <div className="bg-red-50 p-3 rounded-md border border-red-200">
                 <h4 className="text-sm font-medium text-red-800 mb-1">ピーク時削減</h4>
-                <p className="text-2xl font-bold text-red-900">18.5%</p>
-                <p className="text-xs text-red-700 mt-1">電力デマンド削減効果</p>
+                <p className="text-2xl font-bold text-red-900">18.5%</p> {/* Example */}
+                <p className="text-xs text-red-700 mt-1">電力デマンド削減効果</p> {/* Example */}
               </div>
               <div className="bg-green-50 p-3 rounded-md border border-green-200">
                 <h4 className="text-sm font-medium text-green-800 mb-1">CO₂削減効果</h4>
-                <p className="text-2xl font-bold text-green-900">145 トン/年</p>
-                <p className="text-xs text-green-700 mt-1">環境負荷の低減</p>
+                <p className="text-2xl font-bold text-green-900">145 トン/年</p> {/* Example */}
+                <p className="text-xs text-green-700 mt-1">環境負荷の低減</p> {/* Example */}
               </div>
               <div className="bg-yellow-50 p-3 rounded-md border border-yellow-200">
                 <h4 className="text-sm font-medium text-yellow-800 mb-1">設備寿命延長</h4>
-                <p className="text-2xl font-bold text-yellow-900">+22%</p>
-                <p className="text-xs text-yellow-700 mt-1">平均メンテナンス間隔</p>
+                <p className="text-2xl font-bold text-yellow-900">+22%</p> {/* Example */}
+                <p className="text-xs text-yellow-700 mt-1">平均メンテナンス間隔</p> {/* Example */}
               </div>
             </div>
           </div>
@@ -999,7 +1112,8 @@ const WaterOptimizationDashboard: React.FC = () => {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis type="number" fontSize={10} unit=" MWh"/>
                     <YAxis dataKey="facility" type="category" width={100} fontSize={10}/>
-                    <Tooltip formatter={(value: number) => `${value.toLocaleString()} MWh/月`} />
+                    {/* Use the custom formatter */}
+                    <Tooltip formatter={customTooltipFormatter} />
                     <Legend wrapperStyle={{fontSize: "12px"}}/>
                     <Bar dataKey="usage" fill="#FF8042" name="現在の使用量" />
                     <Bar dataKey="optimized" fill="#0088FE" name="最適化後の使用量" />
@@ -1030,13 +1144,13 @@ const WaterOptimizationDashboard: React.FC = () => {
                   </div>
                 ))}
                  <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-200">
-                  <h4 className="text-sm font-medium text-blue-800 mb-2">次期導入計画</h4>
-                  <ul className="space-y-1 text-sm text-blue-700 list-disc list-inside">
-                    <li>AIによる水質最適化システム (2024/09~)</li>
-                    <li>リアルタイム水質モニタリング拡張 (2024/10~)</li>
-                    <li>分散型制御システムの統合 (2025/01~)</li>
-                  </ul>
-                </div>
+                   <h4 className="text-sm font-medium text-blue-800 mb-2">次期導入計画</h4>
+                   <ul className="space-y-1 text-sm text-blue-700 list-disc list-inside">
+                     <li>AIによる水質最適化システム (2024/09~)</li>
+                     <li>リアルタイム水質モニタリング拡張 (2024/10~)</li>
+                     <li>分散型制御システムの統合 (2025/01~)</li>
+                   </ul>
+                 </div>
               </div>
             </div>
           </div>
@@ -1049,41 +1163,41 @@ const WaterOptimizationDashboard: React.FC = () => {
               <div className="p-4 bg-blue-50 rounded-md border border-blue-200">
                 <h4 className="text-base font-medium text-blue-800 mb-3">コスト削減効果</h4>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between"><span className="text-blue-700">エネルギーコスト:</span><span className="font-medium text-blue-900">2,240万円/年</span></div>
-                  <div className="flex justify-between"><span className="text-blue-700">漏水対策:</span><span className="font-medium text-blue-900">4,076万円/年</span></div>
-                  <div className="flex justify-between"><span className="text-blue-700">薬品使用量:</span><span className="font-medium text-blue-900">850万円/年</span></div>
-                  <div className="flex justify-between"><span className="text-blue-700">メンテナンス:</span><span className="font-medium text-blue-900">1,250万円/年</span></div>
-                  <div className="pt-2 border-t border-blue-200 mt-2"><div className="flex justify-between"><span className="font-medium text-blue-800">総削減額:</span><span className="font-bold text-blue-900">8,416万円/年</span></div></div>
+                  <div className="flex justify-between"><span className="text-blue-700">エネルギーコスト:</span><span className="font-medium text-blue-900">2,240万円/年</span></div> {/* Example */}
+                  <div className="flex justify-between"><span className="text-blue-700">漏水対策:</span><span className="font-medium text-blue-900">4,076万円/年</span></div> {/* From waterSavingData */}
+                  <div className="flex justify-between"><span className="text-blue-700">薬品使用量:</span><span className="font-medium text-blue-900">850万円/年</span></div> {/* Example */}
+                  <div className="flex justify-between"><span className="text-blue-700">メンテナンス:</span><span className="font-medium text-blue-900">1,250万円/年</span></div> {/* Example */}
+                  <div className="pt-2 border-t border-blue-200 mt-2"><div className="flex justify-between"><span className="font-medium text-blue-800">総削減額:</span><span className="font-bold text-blue-900">8,416万円/年</span></div></div> {/* Calculated Sum */}
                 </div>
               </div>
               {/* Environmental Impact Reduction */}
               <div className="p-4 bg-green-50 rounded-md border border-green-200">
                  <h4 className="text-base font-medium text-green-800 mb-3">環境負荷低減効果</h4>
                  <div className="space-y-2 text-sm">
-                  <div className="flex justify-between"><span className="text-green-700">CO₂排出削減:</span><span className="font-medium text-green-900">235トン/年</span></div>
-                  <div className="flex justify-between"><span className="text-green-700">水資源保全:</span><span className="font-medium text-green-900">10.2万m³/年</span></div>
-                  <div className="flex justify-between"><span className="text-green-700">水源負荷軽減:</span><span className="font-medium text-green-900">8.5%減</span></div>
-                  <div className="flex justify-between"><span className="text-green-700">薬品使用量削減:</span><span className="font-medium text-green-900">12.8%減</span></div>
-                  <div className="pt-2 border-t border-green-200 mt-2"><div className="flex justify-between"><span className="font-medium text-green-800">環境貢献度評価:</span><span className="font-bold text-green-900">AA (優良)</span></div></div>
-                </div>
+                   <div className="flex justify-between"><span className="text-green-700">CO₂排出削減:</span><span className="font-medium text-green-900">235トン/年</span></div> {/* Example */}
+                   <div className="flex justify-between"><span className="text-green-700">水資源保全:</span><span className="font-medium text-green-900">10.2万m³/年</span></div> {/* Example */}
+                   <div className="flex justify-between"><span className="text-green-700">水源負荷軽減:</span><span className="font-medium text-green-900">8.5%減</span></div> {/* Example */}
+                   <div className="flex justify-between"><span className="text-green-700">薬品使用量削減:</span><span className="font-medium text-green-900">12.8%減</span></div> {/* Example */}
+                   <div className="pt-2 border-t border-green-200 mt-2"><div className="flex justify-between"><span className="font-medium text-green-800">環境貢献度評価:</span><span className="font-bold text-green-900">AA (優良)</span></div></div> {/* Example */}
+                 </div>
               </div>
               {/* Operational Improvement Effects */}
               <div className="p-4 bg-yellow-50 rounded-md border border-yellow-200">
                  <h4 className="text-base font-medium text-yellow-800 mb-3">運用改善効果</h4>
                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between"><span className="text-yellow-700">設備稼働率最適化:</span><span className="font-medium text-yellow-900">+18.5%</span></div>
-                    <div className="flex justify-between"><span className="text-yellow-700">水質管理精度向上:</span><span className="font-medium text-yellow-900">+15.2%</span></div>
-                    <div className="flex justify-between"><span className="text-yellow-700">障害対応時間短縮:</span><span className="font-medium text-yellow-900">-65%</span></div>
-                    <div className="flex justify-between"><span className="text-yellow-700">設備寿命延長:</span><span className="font-medium text-yellow-900">+22%</span></div>
-                    <div className="pt-2 border-t border-yellow-200 mt-2"><div className="flex justify-between"><span className="font-medium text-yellow-800">サービス信頼性向上:</span><span className="font-bold text-yellow-900">+32%</span></div></div>
-                </div>
+                   <div className="flex justify-between"><span className="text-yellow-700">設備稼働率最適化:</span><span className="font-medium text-yellow-900">+18.5%</span></div> {/* Example */}
+                   <div className="flex justify-between"><span className="text-yellow-700">水質管理精度向上:</span><span className="font-medium text-yellow-900">+15.2%</span></div> {/* Example */}
+                   <div className="flex justify-between"><span className="text-yellow-700">障害対応時間短縮:</span><span className="font-medium text-yellow-900">-65%</span></div> {/* Example */}
+                   <div className="flex justify-between"><span className="text-yellow-700">設備寿命延長:</span><span className="font-medium text-yellow-900">+22%</span></div> {/* Example */}
+                   <div className="pt-2 border-t border-yellow-200 mt-2"><div className="flex justify-between"><span className="font-medium text-yellow-800">サービス信頼性向上:</span><span className="font-bold text-yellow-900">+32%</span></div></div> {/* Example */}
+                 </div>
               </div>
             </div>
              <div className="mt-4 flex justify-end">
-              <button type="button" className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                詳細レポート
-              </button>
-            </div>
+               <button type="button" className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                 詳細レポート
+               </button>
+             </div>
           </div>
 
           {/* Long-term Optimization Roadmap */}
@@ -1150,7 +1264,7 @@ const WaterOptimizationDashboard: React.FC = () => {
                  </div>
                </div>
              </div>
-          </div>
+           </div>
         </>
       )}
     </div>
