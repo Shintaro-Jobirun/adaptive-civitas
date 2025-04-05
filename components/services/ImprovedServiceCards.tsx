@@ -102,7 +102,7 @@ const BenefitsSection: React.FC<BenefitsSectionProps> = ({ benefits, accentColor
       <div className="relative z-10">
         <h3 className="text-2xl font-bold text-gray-900 mb-8 inline-block relative">
           <span className="relative">
-            導入メリット
+            導入メリット例
             <span className={`absolute bottom-0 left-0 w-full h-1 ${textAccentColor.replace('text-', 'bg-')} rounded-full`}></span>
           </span>
         </h3>
@@ -245,7 +245,7 @@ const ImprovedServiceCards: React.FC<ServiceCardsProps> = ({ activeService, acti
         <div className="relative p-8 z-10">
           <h3 className="text-2xl font-bold text-gray-900 mb-8 inline-block relative">
             <span className="relative">
-              対応する課題
+              対応可能な課題例
               <span className="absolute bottom-0 left-0 w-full h-1 bg-red-400 rounded-full"></span>
             </span>
           </h3>

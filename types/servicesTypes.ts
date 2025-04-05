@@ -26,6 +26,7 @@ export interface Faq {
     benefits: string[];
     faqs: Faq[];
     implementationProcess: ImplementationStep[];
+    description?: string; 
   }
   
   export interface Tab {

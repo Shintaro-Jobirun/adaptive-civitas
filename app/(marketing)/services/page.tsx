@@ -1,17 +1,41 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation'; // searchParamsを使用するためのフック
 import Button from '@/components/ui/Button';
 import ImprovedServiceCards from '@/components/services/ImprovedServiceCards';
 import { CategoryTabs, Tabs, FAQ } from '@/components/services/';
 import { servicesData } from './data';
 import { Service, Tab } from '@/types/servicesTypes';
+import Footer from '@/components/ui/Footer'
 
 // メインサービスページコンポーネント
 const ServicesPage: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState<string>('revitalization');
-  const [activeTab, setActiveTab] = useState<string>(servicesData[0].id);
+  const searchParams = useSearchParams(); // URLクエリパラメータを取得
+  const serviceId = searchParams.get('id'); // 'id'パラメータの値を取得
+  
+  // 初期値として、指定されたサービスIDに基づいてカテゴリとタブを設定
+  const initialService = serviceId 
+    ? servicesData.find(service => service.id === serviceId) 
+    : servicesData[0];
+  
+  const initialCategory = initialService?.category || 'revitalization';
+  const initialTab = initialService?.id || servicesData[0].id;
+  
+  const [activeCategory, setActiveCategory] = useState<string>(initialCategory);
+  const [activeTab, setActiveTab] = useState<string>(initialTab);
+  
+  // URLパラメータが変更された場合、状態を更新
+  useEffect(() => {
+    if (serviceId) {
+      const service = servicesData.find(s => s.id === serviceId);
+      if (service) {
+        setActiveCategory(service.category);
+        setActiveTab(service.id);
+      }
+    }
+  }, [serviceId]);
   
   // カテゴリー変更時に、そのカテゴリーの最初のサービスをアクティブにする
   const handleCategoryChange = (category: string): void => {
@@ -72,7 +96,7 @@ const ServicesPage: React.FC = () => {
               サービスラインナップ
             </h1>
             <p className="mt-6 text-xl text-white opacity-90 max-w-3xl mx-auto">
-              最先端AI技術を活用した、中小企業や地方自治体向けの
+              最先端AI技術を活用した課題に最適化された
               <br className="hidden md:block" />
               カスタマイズ可能なスマートシティソリューション
             </p>
@@ -155,6 +179,8 @@ const ServicesPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <Footer/>
       
       {/* スタイル追加 */}
       <style jsx global>{`
@@ -166,6 +192,7 @@ const ServicesPage: React.FC = () => {
           scrollbar-width: none;
         }
       `}</style>
+
     </div>
   );
 };

@@ -4,131 +4,96 @@ import Link from 'next/link';
 const Footer = () => {
   return (
     <footer className="bg-gray-800 text-white">
-      <div className="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider">会社情報</h3>
-            <ul className="mt-4 space-y-2">
+      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* 会社情報 */}
+          {/* <div className="col-span-1">
+            <h3 className="text-lg font-semibold mb-4">
+              <Link href="/" className="hover:text-blue-300 transition-colors">
+                合同会社JOBIRUN
+              </Link>
+            </h3>
+            <p className="text-gray-300 text-sm mb-2">
+              〒010-0923<br />
+              秋田県秋田市保戸野金砂町４ー３１
+            </p>
+            <p className="text-gray-300 text-sm">
+              <a href="https://jobirun.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-300 transition-colors">
+                https://jobirun.com
+              </a>
+            </p>
+          </div> */}
+          
+          {/* 会社情報 */}
+          <div className="col-span-1">
+            <h3 className="text-lg font-semibold mb-4">会社情報</h3>
+            <ul className="space-y-2">
               <li>
-                <Link href="/about" className="text-gray-300 hover:text-white">
+                <Link href="/" className="text-gray-300 hover:text-white text-sm transition-colors">
+                  トップページ
+                </Link>
+              </li>
+              <li>
+                <a href="https://jobirun.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white text-sm transition-colors">
                   会社概要
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="/about#mission" className="text-gray-300 hover:text-white">
-                  ミッション
-                </Link>
-              </li>
-              <li>
-                <Link href="/about#team" className="text-gray-300 hover:text-white">
-                  チーム
+                <Link href="/contact" className="text-gray-300 hover:text-white text-sm transition-colors">
+                  お問い合わせ
                 </Link>
               </li>
             </ul>
           </div>
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider">サービス</h3>
-            <ul className="mt-4 space-y-2">
+          
+          {/* 地域活力創造 */}
+          <div className="col-span-1">
+            <h3 className="text-lg font-semibold mb-4 text-blue-300">地域活力創造</h3>
+            <ul className="space-y-2">
               <li>
-                <Link href="/services#traffic" className="text-gray-300 hover:text-white">
-                  交通ソリューション
+                <Link href="/services?id=traffic" className="text-gray-300 hover:text-white text-sm transition-colors">
+                  交通最適化
                 </Link>
               </li>
               <li>
-                <Link href="/services#environment" className="text-gray-300 hover:text-white">
+                <Link href="/services?id=economic" className="text-gray-300 hover:text-white text-sm transition-colors">
+                  地域経済活性化
+                </Link>
+              </li>
+              <li>
+                <Link href="/services?id=security" className="text-gray-300 hover:text-white text-sm transition-colors">
+                  防災・セキュリティ
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* 地域資源管理 */}
+          <div className="col-span-1">
+            <h3 className="text-lg font-semibold mb-4 text-green-300">地域資源管理</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/services?id=environment" className="text-gray-300 hover:text-white text-sm transition-colors">
                   環境モニタリング
                 </Link>
               </li>
               <li>
-                <Link href="/services#energy" className="text-gray-300 hover:text-white">
+                <Link href="/services?id=energy" className="text-gray-300 hover:text-white text-sm transition-colors">
                   エネルギー最適化
                 </Link>
               </li>
               <li>
-                <Link href="/services#security" className="text-gray-300 hover:text-white">
-                  防災・セキュリティ
-                </Link>
-              </li>
-              <li>
-                <Link href="/services#infrastructure" className="text-gray-300 hover:text-white">
+                <Link href="/services?id=infrastructure" className="text-gray-300 hover:text-white text-sm transition-colors">
                   スマートインフラ管理
                 </Link>
               </li>
-              <li>
-                <Link href="/services#economic" className="text-gray-300 hover:text-white">
-                  地域経済活性化
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider">リソース</h3>
-            <ul className="mt-4 space-y-2">
-              <li>
-                <Link href="/case-studies" className="text-gray-300 hover:text-white">
-                  導入事例
-                </Link>
-              </li>
-              <li>
-                <Link href="/pricing" className="text-gray-300 hover:text-white">
-                  料金プラン
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-gray-300 hover:text-white">
-                  ブログ
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider">お問い合わせ</h3>
-            <ul className="mt-4 space-y-2">
-              <li>
-                <Link href="/contact" className="text-gray-300 hover:text-white">
-                  お問い合わせフォーム
-                </Link>
-              </li>
-              <li className="text-gray-300">
-                <p>〒000-0000</p>
-                <p>○○県○○市○○町0-0</p>
-              </li>
-              <li className="text-gray-300">TEL: 00-0000-0000</li>
-              <li className="text-gray-300">Email: info@example.com</li>
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex space-x-6">
-            <a href="#" className="text-gray-400 hover:text-white">
-              <span className="sr-only">Facebook</span>
-              <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fillRule="evenodd"
-                  d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white">
-              <span className="sr-only">Twitter</span>
-              <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-              </svg>
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white">
-              <span className="sr-only">LinkedIn</span>
-              <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fillRule="evenodd"
-                  d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </a>
-          </div>
-          <p className="mt-4 md:mt-0 text-gray-400 text-sm">
-            &copy; {new Date().getFullYear()} スマートシティAI. All rights reserved.
+
+        <div className="mt-12 pt-8 border-t border-gray-700">
+          <p className="text-center text-gray-400 text-sm">
+            &copy; {new Date().getFullYear()} JOBIRUN LLC. All rights reserved.
           </p>
         </div>
       </div>
